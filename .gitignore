@@ -14,9 +14,9 @@ database.sqlite
 .env
 .env.*
 
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
+# NOTE: package-lock.json is needed for Railway deployment
 
 /extensions/*/dist
 
