@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test AI Try-On Modal</title>
+    <style>
+        /* Include the CSS from our extension */
+        .ai-modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 999999 !important;
+            display: none !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 !important;
+            padding: 20px !important;
+            box-sizing: border-box !important;
+        }
+
+        .ai-modal.ai-modal-open {
+            display: flex !important;
+        }
+
+        .ai-modal-overlay {
+            position: absolute !important;
+            inset: 0 !important;
+            background: rgba(0, 0, 0, 0.75) !important;
+            backdrop-filter: blur(8px) !important;
+        }
+
+        .ai-modal-content {
+            position: relative !important;
+            width: 100% !important;
+            max-width: 480px !important;
+            max-height: 90vh !important;
+            background: #ffffff !important;
+            border-radius: 20px !important;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2) !important;
+            overflow: hidden !important;
+            margin: auto !important;
+            z-index: 2 !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .test-image-preview {
+            max-width: 100% !important;
+            max-height: 400px !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            border-radius: 12px !important;
+            display: block !important;
+            margin: 20px auto !important;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .image-container {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Try-On Modal Test</h1>
+    
+    <button onclick="openModal()">Open Modal</button>
+    
+    <div id="test-modal" class="ai-modal">
+        <div class="ai-modal-overlay" onclick="closeModal()"></div>
+        <div class="ai-modal-content">
+            <div style="padding: 40px;">
+                <h2 style="text-align: center; margin-bottom: 30px;">Virtual Try-On Test</h2>
+                
+                <div class="image-container">
+                    <p>Select an image to test sizing:</p>
+                    <input type="file" id="imageInput" accept="image/*" onchange="handleImageSelect(event)">
+                </div>
+                
+                <div id="preview-container" style="display: none;" class="image-container">
+                    <p>Your uploaded image (with proper sizing):</p>
+                    <img id="preview-image" class="test-image-preview" alt="Preview">
+                    <button onclick="document.getElementById('imageInput').click()">Change Image</button>
+                </div>
+                
+                <button onclick="closeModal()" style="width: calc(100% - 40px); margin: 20px;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('test-modal').classList.add('ai-modal-open');
+        }
+        
+        function closeModal() {
+            document.getElementById('test-modal').classList.remove('ai-modal-open');
+        }
+        
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImage = document.getElementById('preview-image');
+                    previewImage.src = e.target.result;
+                    document.getElementById('preview-container').style.display = 'block';
+                    
+                    // Log image dimensions for debugging
+                    previewImage.onload = function() {
+                        console.log('Original dimensions:', this.naturalWidth, 'x', this.naturalHeight);
+                        console.log('Displayed dimensions:', this.width, 'x', this.height);
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>
