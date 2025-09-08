@@ -98,12 +98,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function Index() {
   const shopify = useAppBridge();
 
-  const goToSettings = () => {
-    if (shopify && shopify.navigation) {
-      shopify.navigation.navigate("/app/settings");
-    }
-  };
-
   const goToProducts = () => {
     if (shopify && shopify.navigation) {
       shopify.navigation.navigate("shopify:admin/products");
@@ -154,18 +148,18 @@ export default function Index() {
             <Card>
               <BlockStack gap="400">
                 <Text as="h3" variant="headingMd">
-                  ⚙️ Configuration Required
+                  ⚙️ API Key Setup
                 </Text>
                 <Text variant="bodyMd" as="p">
-                  Set up your OpenRouter API key to enable AI generation.
+                  Add your OpenRouter API key to enable AI generation.
                 </Text>
-                <Button 
-                  onClick={goToSettings}
-                  variant="primary"
-                  fullWidth
-                >
-                  Configure API Settings
-                </Button>
+                <List type="number">
+                  <List.Item>Go to <strong>Online Store → Themes</strong></List.Item>
+                  <List.Item>Click <strong>Customize</strong> on your active theme</List.Item>
+                  <List.Item>Find the <strong>AI Try-On button</strong> section</List.Item>
+                  <List.Item>Paste your API key in the <strong>OpenRouter API Key</strong> field</List.Item>
+                  <List.Item>Click <strong>Save</strong></List.Item>
+                </List>
               </BlockStack>
             </Card>
           </Layout.Section>
@@ -212,7 +206,7 @@ export default function Index() {
                     <Text variant="bodyMd" as="p" color="text-success">
                       <strong>📺 Must watch video - Easy setup steps (40 seconds):</strong>
                     </Text>
-                    <Link url="https://www.youtube.com/watch?v=S5gpyYqQo-4" external>
+                    <Link url="https://www.youtube.com/watch?v=S5gpyYqQo-4" external target="_blank">
                       Watch Setup Video
                     </Link>
                   </BlockStack>
