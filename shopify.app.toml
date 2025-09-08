@@ -2,7 +2,7 @@
 
 client_id = "ecb3e146dc4f7be740028926f595fcbb"
 name = "AI Try On By Anrak"
-application_url = "https://mia-chance-nissan-decide.trycloudflare.com"
+application_url = "https://aitryon-production.up.railway.app"
 embedded = true
 handle = "ai-try-on-by-anrak"
 
@@ -31,7 +31,7 @@ api_version = "2025-07"
 scopes = "read_customers,read_orders,read_products,write_customers,write_orders,write_products"
 
 [auth]
-redirect_urls = ["https://mia-chance-nissan-decide.trycloudflare.com/auth/callback", "https://mia-chance-nissan-decide.trycloudflare.com/auth/shopify/callback", "https://mia-chance-nissan-decide.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://aitryon-production.up.railway.app/auth/callback", "https://aitryon-production.up.railway.app/auth/shopify/callback", "https://aitryon-production.up.railway.app/api/auth/callback"]
 
 [pos]
 embedded = false
