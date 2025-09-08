@@ -738,11 +738,8 @@
           console.log(`Processing product image ${i + 1}/${productImages.length}: ${productImage.src}`);
           
           // Prepare webhook payload with URL for product image
-          // Strip the data URL prefix for n8n (needs raw base64)
-          const rawBase64 = userPhotoData.replace(/^data:image\/[a-z]+;base64,/, '');
-          
           const payload = {
-            userPhoto: rawBase64, // RAW base64 string without prefix
+            userPhoto: userPhotoData, // Full data URL with prefix (data:image/jpeg;base64,...)
             productImageUrl: productImage.src, // Send as URL instead of base64
             apiKey: apiKey
           };
