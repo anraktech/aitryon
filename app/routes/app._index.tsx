@@ -205,6 +205,36 @@ export default function Index() {
             <Card>
               <BlockStack gap="400">
                 <Text as="h3" variant="headingMd">
+                  🎥 Setup Guide & Support
+                </Text>
+                <Box padding="300" background="bg-surface-success">
+                  <BlockStack gap="200">
+                    <Text variant="bodyMd" as="p" color="text-success">
+                      <strong>📺 Must watch video - Easy setup steps (40 seconds):</strong>
+                    </Text>
+                    <Link url="https://www.youtube.com/watch?v=S5gpyYqQo-4" external>
+                      Watch Setup Video
+                    </Link>
+                  </BlockStack>
+                </Box>
+                <Box padding="300" background="bg-surface-info">
+                  <Text variant="bodyMd" as="p" color="text-info">
+                    <strong>💬 For any support contact:</strong> kapil@anrak.io
+                  </Text>
+                </Box>
+                <Text variant="bodyMd" as="p">
+                  Thank you for using AI Try-On by Anrak! 🙏
+                </Text>
+              </BlockStack>
+            </Card>
+          </Layout.Section>
+        </Layout>
+        
+        <Layout>
+          <Layout.Section>
+            <Card>
+              <BlockStack gap="400">
+                <Text as="h3" variant="headingMd">
                   🚀 Next Steps
                 </Text>
                 <InlineStack gap="300">
