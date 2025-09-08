@@ -3,6 +3,8 @@
 
   // Configuration
   const WEBHOOK_URL = 'https://n8n.srv920226.hstgr.cloud/webhook/gemini-image-gen';
+  const CLOUDINARY_CLOUD_NAME = 'dbn97imck';
+  const CLOUDINARY_UPLOAD_PRESET = 'shopify-tryon';
   
   // Error messages for homepage
   const HOMEPAGE_ERROR_MESSAGES = [
@@ -621,6 +623,38 @@
     }
   }
 
+  // Upload image to Cloudinary and return URL
+  async function uploadToCloudinary(base64Image) {
+    try {
+      console.log('Uploading image to Cloudinary...');
+      
+      const formData = new FormData();
+      formData.append('file', base64Image);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      formData.append('folder', 'temp-tryon'); // Optional folder organization
+      
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error(`Cloudinary upload failed: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Cloudinary upload successful:', data.secure_url);
+      return data.secure_url;
+      
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+      throw error;
+    }
+  }
+
   // Compress image to reduce payload size
   function compressImage(base64String, maxWidth = 800, quality = 0.7) {
     return new Promise((resolve, reject) => {
@@ -732,15 +766,27 @@
 
       // Process images based on page type
       const imagesToProcess = isProductPage ? 1 : Math.min(productImages.length, 20); // Product page: 1 image, Homepage: up to 20
+      // Upload user photo to Cloudinary once (outside the loop)
+      let userPhotoUrl;
+      try {
+        userPhotoUrl = await uploadToCloudinary(userPhotoData);
+        console.log('User photo uploaded to Cloudinary:', userPhotoUrl);
+      } catch (uploadError) {
+        console.error('Failed to upload user photo:', uploadError);
+        showError("Failed to upload photo. Please try again.");
+        setState('error');
+        return;
+      }
+
       for (let i = 0; i < imagesToProcess; i++) {
         try {
           const productImage = productImages[i];
           console.log(`Processing product image ${i + 1}/${productImages.length}: ${productImage.src}`);
           
-          // Prepare webhook payload with URL for product image
+          // Prepare webhook payload with URLs for both images
           const payload = {
-            userPhoto: userPhotoData, // Full data URL with prefix (data:image/jpeg;base64,...)
-            productImageUrl: productImage.src, // Send as URL instead of base64
+            userPhotoUrl: userPhotoUrl, // Cloudinary URL
+            productImageUrl: productImage.src, // Shopify CDN URL
             apiKey: apiKey
           };
 
