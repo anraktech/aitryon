@@ -621,7 +621,41 @@
     }
   }
 
-  function handleFileSelect(event) {
+  // Compress image to reduce payload size
+  function compressImage(base64String, maxWidth = 800, quality = 0.7) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Calculate new dimensions
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > maxWidth) {
+          height = (maxWidth / width) * height;
+          width = maxWidth;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw and compress
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Convert to compressed base64
+        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+        console.log(`Image compressed: ${Math.round(base64String.length / 1024)}KB -> ${Math.round(compressedBase64.length / 1024)}KB`);
+        resolve(compressedBase64);
+      };
+      
+      img.onerror = () => reject(new Error('Failed to load image for compression'));
+      img.src = base64String;
+    });
+  }
+
+  async function handleFileSelect(event) {
     const file = event.target.files[0];
     if (!file || !file.type.startsWith('image/')) {
       showError("Please select a valid image file");
@@ -629,27 +663,34 @@
     }
 
     const reader = new FileReader();
-    reader.onload = function(e) {
-      userPhotoData = e.target.result;
-      elements.userPhotoPreview.src = userPhotoData;
-      
-      // Set product image in preview
-      const productImagePreview = document.getElementById('product-image-preview');
-      if (productImagePreview) {
-        // Get the product image from the page
-        const productImageOnPage = document.querySelector('.product-image img, .product img, img[src*="product"], [data-product-image]');
-        if (productImageOnPage && productImageOnPage.src) {
-          productImagePreview.src = productImageOnPage.src;
-        } else {
-          // Fallback: get from data attribute
-          const container = document.querySelector('[data-product-image]');
-          if (container) {
-            productImagePreview.src = container.getAttribute('data-product-image');
+    reader.onload = async function(e) {
+      try {
+        // Compress the image before storing
+        const compressedImage = await compressImage(e.target.result, 800, 0.7);
+        userPhotoData = compressedImage;
+        elements.userPhotoPreview.src = compressedImage;
+        
+        // Set product image in preview
+        const productImagePreview = document.getElementById('product-image-preview');
+        if (productImagePreview) {
+          // Get the product image from the page
+          const productImageOnPage = document.querySelector('.product-image img, .product img, img[src*="product"], [data-product-image]');
+          if (productImageOnPage && productImageOnPage.src) {
+            productImagePreview.src = productImageOnPage.src;
+          } else {
+            // Fallback: get from data attribute
+            const container = document.querySelector('[data-product-image]');
+            if (container) {
+              productImagePreview.src = container.getAttribute('data-product-image');
+            }
           }
         }
+        
+        setState('preview');
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        showError("Failed to process image. Please try another photo.");
       }
-      
-      setState('preview');
     };
     reader.readAsDataURL(file);
   }
@@ -696,13 +737,10 @@
           const productImage = productImages[i];
           console.log(`Processing product image ${i + 1}/${productImages.length}: ${productImage.src}`);
           
-          // Convert product image to base64
-          const productBase64 = await imageUrlToBase64(productImage.src);
-          
-          // Prepare webhook payload
+          // Prepare webhook payload with URL for product image
           const payload = {
-            userPhoto: userPhotoData, // Keep full data:image/jpeg;base64,xxx format
-            productImage: productBase64, // Already has full data:image/jpeg;base64,xxx format
+            userPhoto: userPhotoData, // Compressed base64 image
+            productImageUrl: productImage.src, // Send as URL instead of base64
             apiKey: apiKey
           };
 
