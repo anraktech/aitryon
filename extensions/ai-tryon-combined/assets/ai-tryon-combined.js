@@ -174,7 +174,12 @@
     elements.changePhotoBtn?.addEventListener('click', () => setState('upload'));
     elements.generateBtn?.addEventListener('click', personalizeSite);
     elements.exploreBtn?.addEventListener('click', handleAddToCart);
-    elements.retryBtn?.addEventListener('click', () => setState('upload'));
+    elements.retryBtn?.addEventListener('click', () => {
+      userPhotoData = null;
+      if (elements.photoInput) elements.photoInput.value = '';
+      if (elements.cameraInput) elements.cameraInput.value = '';
+      setState('upload');
+    });
   }
 
   function collectProductImages() {
