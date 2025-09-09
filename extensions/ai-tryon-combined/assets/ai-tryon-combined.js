@@ -1141,6 +1141,7 @@
       if (restoreBtn) {
         restoreBtn.textContent = 'View Results';
       }
+    }
   }
 
   // Call initialization after the main init function
