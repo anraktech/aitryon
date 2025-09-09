@@ -1,0 +1,21 @@
+╭──────────────────────────────────────────────────────────────────────────────────────╮
+│ ✻ Welcome to Claude Code!                                                            │
+│                                                                                      │
+│   /help for help, /status for your current setup                                     │
+│                                                                                      │
+│   cwd: /Users/kapilchandwani/Desktop/RAILWAY/ANRAKOAI/my-shopify-app/my-shopify-app  │
+╰──────────────────────────────────────────────────────────────────────────────────────╯
+⏺ Compact summary (ctrl+r to expand)
+  ⎿  Read ../../../../../../../tmp/test_person.jpg (29 bytes)
+  ⎿  Read ../../../../../../../tmp/test_image.txt (1 lines)
+  ⎿  Read ../../../../../../../tmp/test_person.html (9 lines)
+  ⎿  Read shopify.app.toml (37 lines)
+  ⎿  Read extensions/ai-tryon-combined/shopify.extension.toml (11 lines)
+  ⎿  Todo list read (3 items)
+
+> /compact 
+  ⎿  Compacted. ctrl+r to see full summary
+
+> continue
+  ⎿  API Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Could not process image"},"request_id":"req_011CSxnoCneyR8VkWKK4cTix"}
+

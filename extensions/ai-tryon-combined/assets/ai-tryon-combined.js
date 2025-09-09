@@ -276,6 +276,12 @@
       return;
     }
     
+    // Smart button behavior: if minimized and processing, restore instead of fresh modal
+    if (elements.modal.classList.contains('minimized') && currentState === 'loading') {
+      restoreLoading();
+      return;
+    }
+    
     // Move modal to body to ensure it's not constrained by parent containers
     if (elements.modal.parentElement !== document.body) {
       document.body.appendChild(elements.modal);
@@ -1040,8 +1046,20 @@
   function restoreLoading() {
     if (!elements.modal || !elements.minimizedIndicator) return;
 
-    // Hide minimized indicator
+    // Hide minimized indicator and remove completion state
     elements.minimizedIndicator.style.display = 'none';
+    elements.minimizedIndicator.classList.remove('ai-completed');
+    
+    // Reset minimized indicator text and button for next time
+    const miniText = elements.minimizedIndicator.querySelector('.ai-mini-text');
+    if (miniText) {
+      miniText.textContent = 'Creating your perfect look...';
+    }
+    
+    const restoreBtn = elements.minimizedIndicator.querySelector('.ai-restore-btn');
+    if (restoreBtn) {
+      restoreBtn.textContent = 'View Progress';
+    }
     
     // Show modal with animation
     elements.modal.classList.remove('minimized');
@@ -1108,85 +1126,21 @@
   }
 
   function showCompletionNotification() {
-    // Create completion notification
-    const notification = document.createElement('div');
-    notification.className = 'ai-completion-notification';
-    notification.innerHTML = `
-      <div class="ai-notification-content">
-        <div class="ai-notification-icon">✨</div>
-        <div class="ai-notification-text">
-          <strong>Your try-on is ready!</strong>
-          <span>Click to view results</span>
-        </div>
-      </div>
-    `;
-    
-    notification.style.cssText = `
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      z-index: 10000;
-      cursor: pointer;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-      animation: slideInDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    `;
-
-    // Add notification styles if not already added
-    if (!document.querySelector('#ai-notification-styles')) {
-      const styles = document.createElement('style');
-      styles.id = 'ai-notification-styles';
-      styles.textContent = `
-        @keyframes slideInDown {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .ai-notification-content {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        .ai-notification-icon {
-          font-size: 20px;
-        }
-        .ai-notification-text {
-          display: flex;
-          flex-direction: column;
-        }
-        .ai-notification-text strong {
-          font-size: 14px;
-          color: #333;
-          margin-bottom: 2px;
-        }
-        .ai-notification-text span {
-          font-size: 12px;
-          color: #666;
-        }
-        .ai-completion-notification:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        }
-      `;
-      document.head.appendChild(styles);
-    }
-
-    notification.addEventListener('click', () => {
-      restoreLoading();
-      notification.remove();
-    });
-
-    document.body.appendChild(notification);
-
-    // Auto-remove after 10 seconds
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.remove();
+    // Update minimized indicator to show completion
+    if (elements.minimizedIndicator) {
+      elements.minimizedIndicator.classList.add('ai-completed');
+      
+      // Update the text content
+      const miniText = elements.minimizedIndicator.querySelector('.ai-mini-text');
+      if (miniText) {
+        miniText.textContent = 'Your try-on is ready!';
       }
-    }, 10000);
+      
+      // Update button text
+      const restoreBtn = elements.minimizedIndicator.querySelector('.ai-restore-btn');
+      if (restoreBtn) {
+        restoreBtn.textContent = 'View Results';
+      }
   }
 
   // Call initialization after the main init function
