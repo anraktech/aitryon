@@ -1,8 +1,9 @@
 api_version = "2024-10"
 
 [[extensions]]
+uid = "1c973417-9b9f-1841-5bf9-8ac55ef4f89e498c9cf1"
 type = "theme"
-name = "AI Try-On (Combined)"
+name = "AI Try-On Combined"
 handle = "ai-tryon-combined"
 
 [[extensions.targeting]]

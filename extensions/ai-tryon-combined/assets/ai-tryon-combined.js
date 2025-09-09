@@ -51,7 +51,11 @@
     exploreBtn: null,
     errorTitle: null,
     errorMessage: null,
-    retryBtn: null
+    retryBtn: null,
+    // Minimize/Restore elements
+    minimizeBtn: null,
+    minimizedIndicator: null,
+    restoreBtn: null
   };
 
   // Initialize with multiple fallbacks for robust loading
@@ -891,17 +895,26 @@
         
         // Show success
         setState('result');
+        
+        // Handle completion for minimize/restore
+        handleGenerationComplete();
       } else {
         console.log('Setting state to error (no successes)');
         const analyticsEvent = isProductPage ? 'product_failure' : 'homepage_failure';
         trackAnalytics(analyticsEvent, failureCount);
         showRandomError();
+        
+        // Handle completion for minimize/restore (even on error)
+        handleGenerationComplete();
       }
       
     } catch (error) {
       console.error('Personalization error:', error);
       showRandomError();
       trackAnalytics('homepage_failure', 1);
+      
+      // Handle completion for minimize/restore (even on error)
+      handleGenerationComplete();
     }
   }
 
@@ -963,5 +976,222 @@
     // Can be re-enabled when proper API endpoints are set up
     console.log('Analytics:', type, count);
   }
+
+  // =================================================
+  // MINIMIZE/RESTORE FUNCTIONALITY
+  // =================================================
+
+  // Session storage keys
+  const STORAGE_KEYS = {
+    PROCESSING_STATE: 'ai_tryon_processing_state',
+    USER_PHOTO: 'ai_tryon_user_photo',
+    PROCESS_TYPE: 'ai_tryon_process_type'
+  };
+
+  // Initialize minimize/restore functionality
+  function initMinimizeRestore() {
+    // Cache minimize/restore elements
+    const isProductPage = window.location.pathname.includes('/products/');
+    
+    if (isProductPage) {
+      elements.minimizeBtn = document.getElementById('minimize-loading-btn');
+      elements.minimizedIndicator = document.getElementById('ai-minimized-indicator');
+      elements.restoreBtn = document.getElementById('restore-loading-btn');
+    } else {
+      elements.minimizeBtn = document.getElementById('minimize-homepage-loading-btn');
+      elements.minimizedIndicator = document.getElementById('ai-homepage-minimized-indicator');
+      elements.restoreBtn = document.getElementById('restore-homepage-loading-btn');
+    }
+
+    // Setup minimize/restore event listeners
+    if (elements.minimizeBtn) {
+      elements.minimizeBtn.addEventListener('click', minimizeLoading);
+    }
+    
+    if (elements.restoreBtn) {
+      elements.restoreBtn.addEventListener('click', restoreLoading);
+    }
+
+    if (elements.minimizedIndicator) {
+      elements.minimizedIndicator.addEventListener('click', restoreLoading);
+    }
+
+    // Check for ongoing process on page load
+    checkOngoingProcess();
+  }
+
+  function minimizeLoading() {
+    if (!elements.modal || !elements.minimizedIndicator) return;
+
+    // Save current processing state
+    saveProcessingState();
+
+    // Hide modal with animation
+    elements.modal.classList.add('minimized');
+    
+    // Show minimized indicator
+    setTimeout(() => {
+      elements.minimizedIndicator.style.display = 'flex';
+    }, 150);
+
+    console.log('Modal minimized - continuing generation in background');
+  }
+
+  function restoreLoading() {
+    if (!elements.modal || !elements.minimizedIndicator) return;
+
+    // Hide minimized indicator
+    elements.minimizedIndicator.style.display = 'none';
+    
+    // Show modal with animation
+    elements.modal.classList.remove('minimized');
+
+    console.log('Modal restored');
+  }
+
+  function saveProcessingState() {
+    const isProductPage = window.location.pathname.includes('/products/');
+    const state = {
+      isProcessing: true,
+      timestamp: Date.now(),
+      processType: isProductPage ? 'product' : 'homepage',
+      userPhotoData: userPhotoData
+    };
+
+    sessionStorage.setItem(STORAGE_KEYS.PROCESSING_STATE, JSON.stringify(state));
+    
+    if (userPhotoData) {
+      sessionStorage.setItem(STORAGE_KEYS.USER_PHOTO, userPhotoData);
+    }
+  }
+
+  function checkOngoingProcess() {
+    const savedState = sessionStorage.getItem(STORAGE_KEYS.PROCESSING_STATE);
+    
+    if (savedState) {
+      try {
+        const state = JSON.parse(savedState);
+        const isRecent = (Date.now() - state.timestamp) < 120000; // 2 minutes
+        
+        if (state.isProcessing && isRecent && elements.minimizedIndicator) {
+          // Show minimized indicator for ongoing process
+          elements.minimizedIndicator.style.display = 'flex';
+          console.log('Restored minimized state for ongoing process');
+        } else {
+          // Clean up old state
+          clearProcessingState();
+        }
+      } catch (error) {
+        console.log('Error checking ongoing process:', error);
+        clearProcessingState();
+      }
+    }
+  }
+
+  function clearProcessingState() {
+    sessionStorage.removeItem(STORAGE_KEYS.PROCESSING_STATE);
+    sessionStorage.removeItem(STORAGE_KEYS.USER_PHOTO);
+    
+    if (elements.minimizedIndicator) {
+      elements.minimizedIndicator.style.display = 'none';
+    }
+  }
+
+  function handleGenerationComplete() {
+    // Clear processing state when generation completes
+    clearProcessingState();
+    
+    // If modal is minimized, show completion notification
+    if (elements.modal && elements.modal.classList.contains('minimized')) {
+      showCompletionNotification();
+    }
+  }
+
+  function showCompletionNotification() {
+    // Create completion notification
+    const notification = document.createElement('div');
+    notification.className = 'ai-completion-notification';
+    notification.innerHTML = `
+      <div class="ai-notification-content">
+        <div class="ai-notification-icon">✨</div>
+        <div class="ai-notification-text">
+          <strong>Your try-on is ready!</strong>
+          <span>Click to view results</span>
+        </div>
+      </div>
+    `;
+    
+    notification.style.cssText = `
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      z-index: 10000;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      animation: slideInDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    `;
+
+    // Add notification styles if not already added
+    if (!document.querySelector('#ai-notification-styles')) {
+      const styles = document.createElement('style');
+      styles.id = 'ai-notification-styles';
+      styles.textContent = `
+        @keyframes slideInDown {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .ai-notification-content {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .ai-notification-icon {
+          font-size: 20px;
+        }
+        .ai-notification-text {
+          display: flex;
+          flex-direction: column;
+        }
+        .ai-notification-text strong {
+          font-size: 14px;
+          color: #333;
+          margin-bottom: 2px;
+        }
+        .ai-notification-text span {
+          font-size: 12px;
+          color: #666;
+        }
+        .ai-completion-notification:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+      `;
+      document.head.appendChild(styles);
+    }
+
+    notification.addEventListener('click', () => {
+      restoreLoading();
+      notification.remove();
+    });
+
+    document.body.appendChild(notification);
+
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 10000);
+  }
+
+  // Call initialization after the main init function
+  setTimeout(() => {
+    initMinimizeRestore();
+  }, 100);
 
 })();

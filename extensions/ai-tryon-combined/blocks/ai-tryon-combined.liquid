@@ -24,6 +24,12 @@
       "default": "#764ba2"
     },
     {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
       "type": "text",
       "id": "openrouter_api_key",
       "label": "OpenRouter API Key",
@@ -41,7 +47,7 @@
   <button 
     class="ai-tryon-button ai-product-button" 
     id="ai-tryon-product-trigger"
-    style="background-color: {{ block.settings.button_color }}; border-color: {{ block.settings.button_color }}; color: #ffffff;"
+    style="background-color: {{ block.settings.button_color }}; border-color: {{ block.settings.button_color }}; color: {{ block.settings.button_text_color }};"
   >
     {{ block.settings.button_text | default: 'Try It On' }}
   </button>
@@ -111,6 +117,14 @@
       
       <!-- Loading State -->
       <div class="ai-loading-section" id="loading-section" style="display: none;">
+        <button class="ai-minimize-btn" id="minimize-loading-btn" aria-label="Minimize">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 14 10 14 10 20"></polyline>
+            <polyline points="20 10 14 10 14 4"></polyline>
+            <line x1="14" y1="10" x2="21" y2="3"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+        </button>
         <div class="ai-loading-animation">
           <div class="ai-orbit-container">
             <div class="ai-orbit-item ai-orbit-user">
@@ -165,13 +179,29 @@
   </div>
 </div>
 
+<!-- Minimized Loading Indicator -->
+<div id="ai-minimized-indicator" class="ai-minimized-indicator" style="display: none;">
+  <div class="ai-minimized-content">
+    <div class="ai-mini-spinner"></div>
+    <span class="ai-mini-text">Generating...</span>
+  </div>
+  <button class="ai-restore-btn" id="restore-loading-btn" aria-label="Restore">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="15 3 21 3 21 9"></polyline>
+      <polyline points="9 21 3 21 3 15"></polyline>
+      <line x1="21" y1="3" x2="14" y2="10"></line>
+      <line x1="3" y1="21" x2="10" y2="14"></line>
+    </svg>
+  </button>
+</div>
+
 {% elsif request.page_type == 'index' %}
 <div class="ai-homepage-container" data-api-key="{{ block.settings.openrouter_api_key }}">
   <div class="ai-homepage-hero">
     <button 
       class="ai-homepage-button" 
       id="ai-homepage-trigger"
-      style="background: linear-gradient(135deg, {{ block.settings.button_color }} 0%, {{ block.settings.button_color | color_darken: 15 }} 100%);"
+      style="background: linear-gradient(135deg, {{ block.settings.button_color }} 0%, {{ block.settings.button_color | color_darken: 15 }} 100%); color: {{ block.settings.button_text_color }};"
     >
       <div class="ai-button-content">
         <span class="ai-button-main-text">{{ block.settings.button_text }}</span>
@@ -262,6 +292,14 @@
       
       <!-- Loading State -->
       <div class="ai-loading-section" id="homepage-loading-section" style="display: none;">
+        <button class="ai-minimize-btn" id="minimize-homepage-loading-btn" aria-label="Minimize">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 14 10 14 10 20"></polyline>
+            <polyline points="20 10 14 10 14 4"></polyline>
+            <line x1="14" y1="10" x2="21" y2="3"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+        </button>
         <div class="ai-loading-animation">
           <div class="ai-magic-loading">
             <div class="ai-magic-circle"></div>
@@ -314,5 +352,21 @@
       <p class="ai-disclaimer">Use only your own photos | No nudity | AI-generated results may vary | Please refer to terms for more</p>
     </div>
   </div>
+</div>
+
+<!-- Homepage Minimized Loading Indicator -->
+<div id="ai-homepage-minimized-indicator" class="ai-minimized-indicator" style="display: none;">
+  <div class="ai-minimized-content">
+    <div class="ai-mini-spinner"></div>
+    <span class="ai-mini-text">Personalizing...</span>
+  </div>
+  <button class="ai-restore-btn" id="restore-homepage-loading-btn" aria-label="Restore">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="15 3 21 3 21 9"></polyline>
+      <polyline points="9 21 3 21 3 15"></polyline>
+      <line x1="21" y1="3" x2="14" y2="10"></line>
+      <line x1="3" y1="21" x2="10" y2="14"></line>
+    </svg>
+  </button>
 </div>
 {% endif %}

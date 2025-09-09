@@ -1238,3 +1238,166 @@
     max-height: 100% !important;
   }
 }
+
+/* =================================================
+   MINIMIZE/RESTORE FUNCTIONALITY STYLES
+   ================================================= */
+
+/* Minimize Button in Loading State */
+.ai-minimize-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #666;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.ai-minimize-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  color: #333;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ai-minimize-btn:active {
+  transform: scale(0.95);
+}
+
+/* Minimized Floating Indicator */
+.ai-minimized-indicator {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 24px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 9999;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  backdrop-filter: blur(20px);
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.ai-minimized-indicator:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ai-minimized-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-mini-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e0e0e0;
+  border-top: 2px solid #007aff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.ai-mini-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+}
+
+.ai-restore-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ai-restore-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.ai-restore-btn:active {
+  transform: scale(0.9);
+}
+
+/* Hide modal when minimized */
+.ai-modal.minimized {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+
+/* Hide modal overlay when minimized */
+.ai-modal.minimized .ai-modal-overlay {
+  opacity: 0;
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile responsiveness for minimize features */
+@media (max-width: 768px) {
+  .ai-minimized-indicator {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 14px;
+    border-radius: 20px;
+  }
+  
+  .ai-mini-text {
+    font-size: 13px;
+  }
+  
+  .ai-minimize-btn {
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+  }
+  
+  .ai-minimize-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
