@@ -782,10 +782,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 20px;
   width: 100%;
   max-height: 80vh;
-  padding: 12px 0;
+  padding: 24px 0;
   background: #ffffff;
 }
 
@@ -837,8 +837,8 @@
 
 .ai-result-message {
   text-align: center;
-  padding: 0;
-  max-width: 240px;
+  padding: 16px 0;
+  max-width: 280px;
   margin: 0 auto;
 }
 
@@ -1239,200 +1239,6 @@
   }
 }
 
-/* =================================================
-   MINIMIZE/RESTORE FUNCTIONALITY STYLES
-   ================================================= */
-
-/* Minimize Button in Loading State */
-.ai-minimize-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  color: #666;
-  z-index: 10;
-  backdrop-filter: blur(10px);
-}
-
-.ai-minimize-btn:hover {
-  background: rgba(255, 255, 255, 1);
-  color: #333;
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.ai-minimize-btn:active {
-  transform: scale(0.95);
-}
-
-/* Small Elegant Circular Floating Robot Icon - ALWAYS HIDDEN BY DEFAULT */
-.ai-minimized-indicator {
-  position: fixed !important;
-  bottom: 20px !important;
-  right: 20px !important;
-  width: 48px !important;
-  height: 48px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  border: 2px solid rgba(99, 102, 241, 0.3) !important;
-  border-radius: 50% !important;
-  display: none !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  z-index: 2147483647 !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
-  backdrop-filter: blur(15px) saturate(180%) !important;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif !important;
-  pointer-events: auto !important;
-  user-select: none !important;
-  /* Force it to be on top of everything */
-  isolation: isolate !important;
-  /* Attach to viewport, not to any container */
-  top: auto !important;
-  left: auto !important;
-  transform: none !important;
-  margin: 0 !important;
-  /* Ensure it floats with scroll */
-  position: fixed !important;
-}
-
-.ai-minimized-indicator.ai-completed {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  border-color: #10b981 !important;
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4), 0 0 20px rgba(16, 185, 129, 0.3) !important;
-}
-
-.ai-minimized-indicator:hover {
-  transform: scale(1.1) translateY(-2px) !important;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
-}
-
-.ai-minimized-indicator.ai-completed:hover {
-  box-shadow: 0 12px 35px rgba(16, 185, 129, 0.5), 0 0 25px rgba(16, 185, 129, 0.4) !important;
-}
-
-.ai-minimized-indicator:active {
-  transform: scale(1.05) translateY(-1px) !important;
-}
-
-/* Mobile optimization for floating icon */
-@media (max-width: 768px) {
-  .ai-minimized-indicator {
-    bottom: 16px !important;
-    right: 16px !important;
-    width: 44px !important;
-    height: 44px !important;
-  }
-  
-  .ai-minimized-content::before {
-    width: 22px !important;
-    height: 22px !important;
-  }
-}
-
-/* Glowing animation */
-@keyframes aiGlowPulse {
-  0%, 100% {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05), 0 0 20px rgba(99, 102, 241, 0.2);
-  }
-  50% {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05), 0 0 30px rgba(99, 102, 241, 0.4);
-  }
-}
-
-.ai-minimized-indicator.ai-completed {
-  animation: aiFloatIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), aiCompletedGlow 2s ease-in-out infinite !important;
-}
-
-@keyframes aiCompletedGlow {
-  0%, 100% {
-    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4), 0 0 20px rgba(16, 185, 129, 0.3);
-  }
-  50% {
-    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5), 0 0 35px rgba(16, 185, 129, 0.5);
-  }
-}
-
-@keyframes aiFloatIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.3) translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* Circular Icon Content */
-.ai-minimized-content {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  height: 100% !important;
-  position: relative !important;
-}
-
-/* Colorful Robot AI Icon */
-.ai-minimized-content::before {
-  content: "" !important;
-  width: 24px !important;
-  height: 24px !important;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%) !important;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7v1a7 7 0 0 1-7 7H10a7 7 0 0 1-7-7v-1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2zM9 9a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm6 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM8.5 13h7l-1 2h-5l-1-2z'/%3E%3C/svg%3E") no-repeat center !important;
-  mask-size: contain !important;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7v1a7 7 0 0 1-7 7H10a7 7 0 0 1-7-7v-1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2zM9 9a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm6 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM8.5 13h7l-1 2h-5l-1-2z'/%3E%3C/svg%3E") no-repeat center !important;
-  -webkit-mask-size: contain !important;
-  animation: aiColorShift 3s ease-in-out infinite !important;
-}
-
-.ai-minimized-indicator.ai-completed .ai-minimized-content::before {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") no-repeat center !important;
-  mask-size: contain !important;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") no-repeat center !important;
-  -webkit-mask-size: contain !important;
-  animation: none !important;
-}
-
-@keyframes aiColorShift {
-  0%, 100% {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
-  }
-  33% {
-    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #6366f1 100%);
-  }
-  66% {
-    background: linear-gradient(135deg, #ec4899 0%, #6366f1 50%, #8b5cf6 100%);
-  }
-}
-
-/* Hide spinner and text - replaced by paint brush icon */
-.ai-mini-spinner,
-.ai-mini-text,
-.ai-restore-btn {
-  display: none !important;
-}
-
-@keyframes aiSpin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
 
 /* Refresh Button in Result Image */
 .ai-refresh-btn {
@@ -1480,43 +1286,6 @@
   }
 }
 
-/* Enhanced floating indicator positioning to work across website */
-.ai-minimized-indicator {
-  position: fixed !important;
-  bottom: 24px !important;
-  right: 24px !important;
-  width: 64px !important;
-  height: 64px !important;
-  background: #ffffff !important;
-  border: 2px solid #e0e7ff !important;
-  border-radius: 50% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  z-index: 999999 !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  animation: aiFloatIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), aiGlowPulse 2s ease-in-out infinite !important;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif !important;
-  pointer-events: auto !important;
-  user-select: none !important;
-  /* Ensure it stays above all Shopify theme elements */
-  isolation: isolate !important;
-}
-
-/* Hide modal when minimized */
-.ai-modal.minimized {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(20px);
-}
-
-/* Hide modal overlay when minimized */
-.ai-modal.minimized .ai-modal-overlay {
-  opacity: 0;
-}
 
 /* Animations */
 @keyframes slideInUp {
@@ -1539,28 +1308,136 @@
   }
 }
 
-/* Mobile responsiveness for minimize features */
-@media (max-width: 768px) {
-  .ai-minimized-indicator {
-    bottom: 16px;
-    right: 16px;
-    padding: 10px 14px;
-    border-radius: 20px;
+/* =================================================
+   FASHION FACTS DISPLAY
+   ================================================= */
+
+/* Facts container - elegant bright box under loading animation */
+.ai-loading-facts {
+  display: none;
+  opacity: 0;
+  max-width: 400px !important;
+  margin: 24px auto 0 !important;
+  padding: 20px 24px !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  border: 1px solid rgba(99, 102, 241, 0.12) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.ai-loading-facts::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%) !important;
+  background-size: 200% 200% !important;
+  animation: factsBorderShimmer 3s ease-in-out infinite !important;
+}
+
+@keyframes factsBorderShimmer {
+  0%, 100% {
+    background-position: 0% 50%;
   }
-  
-  .ai-mini-text {
-    font-size: 13px;
-  }
-  
-  .ai-minimize-btn {
-    top: 16px;
-    right: 16px;
-    width: 32px;
-    height: 32px;
-  }
-  
-  .ai-minimize-btn svg {
-    width: 14px;
-    height: 14px;
+  50% {
+    background-position: 100% 50%;
   }
 }
+
+/* Facts header */
+.ai-facts-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif !important;
+}
+
+.ai-facts-icon {
+  font-size: 18px !important;
+  animation: factsIconPulse 2s ease-in-out infinite !important;
+}
+
+@keyframes factsIconPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.ai-facts-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  margin: 0 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Facts text content */
+.ai-facts-text {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  color: #4b5563 !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif !important;
+  transition: opacity 0.3s ease !important;
+  min-height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Hover effects */
+.ai-loading-facts:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .ai-loading-facts {
+    max-width: 95% !important;
+    margin: 20px auto 0 !important;
+    padding: 16px 20px !important;
+    border-radius: 12px !important;
+  }
+  
+  .ai-facts-text {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    min-height: 40px !important;
+  }
+  
+  .ai-facts-title {
+    font-size: 13px !important;
+  }
+}
+
+/* Animation for facts appearing */
+@keyframes factsSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ai-loading-facts.ai-facts-visible {
+  display: block !important;
+  opacity: 1 !important;
+  animation: factsSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+

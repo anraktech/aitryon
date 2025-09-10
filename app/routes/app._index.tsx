@@ -158,6 +158,7 @@ export default function Index() {
                   <List.Item>Click <strong>Customize</strong> on your active theme</List.Item>
                   <List.Item>Find the <strong>AI Try-On button</strong> section</List.Item>
                   <List.Item>Paste your API key in the <strong>OpenRouter API Key</strong> field</List.Item>
+                  <List.Item><strong>IMPORTANT: Add at least $5 in credits to your OpenRouter account!</strong></List.Item>
                   <List.Item>Click <strong>Save</strong></List.Item>
                 </List>
               </BlockStack>
@@ -181,12 +182,13 @@ export default function Index() {
                   </List.Item>
                   <List.Item>Go to the API Keys section in your dashboard</List.Item>
                   <List.Item>Click "Create Key" and give it a name (e.g. "Shopify AI Try-On")</List.Item>
+                  <List.Item><strong>🚨 CRITICAL: Go to Credits section and add at least $5</strong></List.Item>
                   <List.Item>Copy the key that starts with "sk-or-v1-"</List.Item>
-                  <List.Item>Paste it in the settings above and save</List.Item>
+                  <List.Item>Paste it in the theme settings and save</List.Item>
                 </List>
-                <Box padding="300" background="bg-surface-info">
-                  <Text variant="bodyMd" as="p" color="text-info">
-                    💡 <strong>Tip:</strong> Add credits to your OpenRouter account to enable AI generation. Each try-on costs approximately $0.02-0.05.
+                <Box padding="300" background="bg-surface-critical">
+                  <Text variant="bodyMd" as="p" color="text-critical">
+                    🚨 <strong>CRITICAL:</strong> You MUST add at least $5 in credits to your OpenRouter account or the app will NOT work! Each try-on costs approximately $0.01-0.05.
                   </Text>
                 </Box>
               </BlockStack>

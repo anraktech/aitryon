@@ -117,14 +117,6 @@
       
       <!-- Loading State -->
       <div class="ai-loading-section" id="loading-section" style="display: none;">
-        <button class="ai-minimize-btn" id="minimize-loading-btn" aria-label="Minimize">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="4 14 10 14 10 20"></polyline>
-            <polyline points="20 10 14 10 14 4"></polyline>
-            <line x1="14" y1="10" x2="21" y2="3"></line>
-            <line x1="3" y1="21" x2="10" y2="14"></line>
-          </svg>
-        </button>
         <div class="ai-loading-animation">
           <div class="ai-orbit-container">
             <div class="ai-orbit-item ai-orbit-user">
@@ -138,6 +130,15 @@
         </div>
         <p class="ai-loading-text">Creating your perfect look...</p>
         <p class="ai-loading-subtext">This usually takes 10-20 seconds</p>
+        
+        <!-- Fashion Facts Container -->
+        <div id="loading-facts" class="ai-loading-facts">
+          <div class="ai-facts-header">
+            <span class="ai-facts-icon">✨</span>
+            <h4 class="ai-facts-title">Did You Know?</h4>
+          </div>
+          <p class="ai-facts-text">Fashion facts will appear here...</p>
+        </div>
       </div>
       
       <!-- Result State -->
@@ -186,10 +187,6 @@
   </div>
 </div>
 
-<!-- Robot AI Floating Icon - HIDDEN BY DEFAULT -->
-<div id="ai-minimized-indicator" class="ai-minimized-indicator" style="display: none !important; visibility: hidden !important; opacity: 0 !important;">
-  <div class="ai-minimized-content"></div>
-</div>
 
 {% elsif request.page_type == 'index' %}
 <div class="ai-homepage-container" data-api-key="{{ block.settings.openrouter_api_key }}">
@@ -288,14 +285,6 @@
       
       <!-- Loading State -->
       <div class="ai-loading-section" id="homepage-loading-section" style="display: none;">
-        <button class="ai-minimize-btn" id="minimize-homepage-loading-btn" aria-label="Minimize">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="4 14 10 14 10 20"></polyline>
-            <polyline points="20 10 14 10 14 4"></polyline>
-            <line x1="14" y1="10" x2="21" y2="3"></line>
-            <line x1="3" y1="21" x2="10" y2="14"></line>
-          </svg>
-        </button>
         <div class="ai-loading-animation">
           <div class="ai-magic-loading">
             <div class="ai-magic-circle"></div>
@@ -305,6 +294,15 @@
         </div>
         <p class="ai-loading-text">Creating your personalized shopping experience...</p>
         <p class="ai-loading-subtext">This may take a moment as we transform the entire catalog</p>
+        
+        <!-- Fashion Facts Container -->
+        <div id="homepage-loading-facts" class="ai-loading-facts">
+          <div class="ai-facts-header">
+            <span class="ai-facts-icon">💡</span>
+            <h4 class="ai-facts-title">Style Tip</h4>
+          </div>
+          <p class="ai-facts-text">Fashion insights will appear here...</p>
+        </div>
       </div>
       
       <!-- Result State -->
@@ -350,9 +348,4 @@
   </div>
 </div>
 
-<!-- Homepage Minimized Loading Indicator -->
-<!-- Robot AI Floating Icon for Homepage - HIDDEN BY DEFAULT -->
-<div id="ai-homepage-minimized-indicator" class="ai-minimized-indicator" style="display: none !important; visibility: hidden !important; opacity: 0 !important;">
-  <div class="ai-minimized-content"></div>
-</div>
 {% endif %}

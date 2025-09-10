@@ -25,6 +25,67 @@
     { main: "You look radiant!", sub: "This style complements you perfectly" }
   ];
 
+  // Fashion facts and tips that appear during loading
+  const FASHION_FACTS = [
+    "High heels were originally designed for men in the 10th century to help Persian cavalry stay secure in stirrups.",
+    "Until the 1700s, men wore skirts just as often as women did.",
+    "Purple was reserved for royalty in Ancient Rome because the dye was expensive and labor-intensive to produce.",
+    "Buttons were invented 3,500 years before buttonholes - they originally fastened with loops.",
+    "Women's buttons are on the left because wealthy women were dressed by servants, and it was easier for right-handed maids.",
+    "The pink-for-girls trend only started in the 1960s - before that, pink was considered masculine.",
+    "Men historically wore jewelry including pearls, rubies, and gold chains as symbols of wealth and power.",
+    "The T-shirt is one of the most popular items worldwide, with around 2 billion sold every year.",
+    "Clothing prices have actually decreased by 8.5% since 1992, while most other goods increased.",
+    "The crocodile logo was created in 1927 for tennis player René Lacoste, nicknamed 'The Alligator'.",
+    "Charles Frederick Worth is credited as the first fashion designer and inventor of haute couture.",
+    "Jeans with more than 3% elastane will stretch out faster - stick to less stretchy denim for longevity.",
+    "Hanging sweaters will stretch them out of shape - always fold knits and store flat.",
+    "The average person spends 10 minutes a day looking in mirrors - that's 6.5 days per year!",
+    "Black clothing doesn't make you look slimmer - proper fit and proportions do.",
+    "Monochrome outfits create a continuous line that elongates your silhouette.",
+    "Investing in quality basics saves money long-term as they last much longer.",
+    "Your shoes say more about you than any other clothing item - keep them clean and well-maintained.",
+    "Confidence is the best accessory you can wear - it makes any outfit look expensive.",
+    "Mixing high-end pieces with affordable items is the secret weapon of fashion insiders.",
+    "The 'little black dress' was popularized by Coco Chanel in 1926.",
+    "Denim was originally workwear for miners during the California Gold Rush.",
+    "The necktie evolved from Croatian military scarves worn by soldiers in the 17th century.",
+    "Stiletto heels are named after the thin Italian dagger called a 'stiletto'.",
+    "The tuxedo was first worn to a country club in Tuxedo Park, New York in 1886.",
+    "Chanel No. 5 was the first perfume to be named after a designer rather than a flower.",
+    "The bikini was named after Bikini Atoll, where atomic bomb tests were conducted.",
+    "Velcro was invented in 1941 after a Swiss engineer studied how burrs stuck to his dog's fur.",
+    "The zipper was originally called the 'clasp locker' when invented in 1891.",
+    "Fashion Week originated in Paris in 1973 to showcase French designers to international buyers.",
+    "The color 'millennial pink' was Pantone's Color of the Year in 2016.",
+    "Leather jackets were first worn by aviators and motorcyclists for protection.",
+    "The polo shirt was invented by tennis player René Lacoste for better movement on court.",
+    "Platform shoes were worn by ancient Greek actors to appear taller on stage.",
+    "The word 'wardrobe' comes from 'wardrobe' - a room where clothes were kept.",
+    "Shoulder pads became popular in the 1980s to create a powerful silhouette for working women.",
+    "The color blue was considered feminine until the mid-20th century.",
+    "Corsets were originally worn by men as back support in the 16th century.",
+    "The baseball cap evolved from the Brooklyn Excelsiors' cap in 1860.",
+    "Sunglasses were first used by judges in ancient China to hide their facial expressions.",
+    "The cocktail dress was created for semi-formal evening events in the 1920s.",
+    "Wool can absorb up to 30% of its weight in moisture while still feeling dry.",
+    "The average American throws away 81 pounds of clothing per year.",
+    "Cotton is the most widely used natural fiber in clothing production.",
+    "The fashion industry is the second most polluting industry after oil.",
+    "A well-fitted bra can make you look 10 pounds lighter and years younger.",
+    "Horizontal stripes can actually make you look taller if worn correctly.",
+    "The perfect heel height for most women is 2-3 inches for comfort and posture.",
+    "Capsule wardrobes typically contain 30-40 versatile pieces that mix and match.",
+    "Wearing clothes that fit properly is more flattering than wearing smaller sizes.",
+    "Quality cotton improves with washing, becoming softer over time."
+  ];
+
+  // Facts display management
+  let factsTimer = null;
+  let factsStartTimer = null;
+  let shuffledFacts = [];
+  let currentFactIndex = 0;
+
   // State management
   let currentState = 'upload';
   let userPhotoData = null;
@@ -52,10 +113,7 @@
     errorTitle: null,
     errorMessage: null,
     retryBtn: null,
-    // Minimize/Restore elements
-    minimizeBtn: null,
-    minimizedIndicator: null,
-    restoreBtn: null
+    factsContainer: null,
   };
 
   // Initialize with multiple fallbacks for robust loading
@@ -120,6 +178,9 @@
       elements.errorTitle = document.getElementById('error-title');
       elements.errorMessage = document.getElementById('error-message');
       elements.retryBtn = document.getElementById('retry-btn');
+      
+      // Facts container
+      elements.factsContainer = document.getElementById('loading-facts');
     } else {
       // Homepage elements
       elements.modal = document.getElementById('ai-homepage-modal');
@@ -151,6 +212,9 @@
       elements.errorTitle = document.getElementById('homepage-error-title');
       elements.errorMessage = document.getElementById('homepage-error-message');
       elements.retryBtn = document.getElementById('homepage-retry-btn');
+      
+      // Facts container
+      elements.factsContainer = document.getElementById('homepage-loading-facts');
     }
     
     console.log('Page type:', isProductPage ? 'Product' : 'Homepage');
@@ -288,19 +352,6 @@
       return;
     }
     
-    // Smart button behavior: if minimized and processing, restore instead of fresh modal
-    if (elements.modal.classList.contains('minimized') && currentState === 'loading') {
-      restoreLoading();
-      return;
-    }
-    
-    // Hide minimized indicator when opening a fresh modal
-    if (elements.minimizedIndicator) {
-      elements.minimizedIndicator.style.display = 'none';
-      elements.minimizedIndicator.style.visibility = 'hidden';
-      elements.minimizedIndicator.style.opacity = '0';
-      elements.minimizedIndicator.classList.remove('ai-completed');
-    }
     
     // Move modal to body to ensure it's not constrained by parent containers
     if (elements.modal.parentElement !== document.body) {
@@ -333,6 +384,7 @@
     if (!elements.modal) return;
     elements.modal.classList.remove('ai-modal-open');
     document.body.style.overflow = '';
+    stopFactsDisplay();
     resetState();
   }
 
@@ -485,13 +537,6 @@
     if (elements.resultSection) elements.resultSection.style.display = 'none';
     if (elements.errorSection) elements.errorSection.style.display = 'none';
     
-    // Hide minimized indicator when showing any non-loading state or when modal is open
-    if (state !== 'loading' && elements.minimizedIndicator) {
-      elements.minimizedIndicator.style.display = 'none';
-      elements.minimizedIndicator.style.visibility = 'hidden';
-      elements.minimizedIndicator.style.opacity = '0';
-      elements.minimizedIndicator.classList.remove('ai-completed');
-    }
     
     // Show current state
     switch(state) {
@@ -503,23 +548,15 @@
         break;
       case 'loading':
         if (elements.loadingSection) elements.loadingSection.style.display = 'block';
+        startFactsDisplay();
         break;
       case 'result':
         if (elements.resultSection) elements.resultSection.style.display = 'block';
-        // Ensure minimized indicator is hidden when results are shown
-        if (elements.minimizedIndicator) {
-          elements.minimizedIndicator.style.display = 'none';
-          elements.minimizedIndicator.style.visibility = 'hidden';
-          elements.minimizedIndicator.style.opacity = '0';
-          elements.minimizedIndicator.classList.remove('ai-completed');
-        }
-        // Remove minimized class from modal
-        if (elements.modal) {
-          elements.modal.classList.remove('minimized');
-        }
+        stopFactsDisplay();
         break;
       case 'error':
         if (elements.errorSection) elements.errorSection.style.display = 'block';
+        stopFactsDisplay();
         break;
     }
     
@@ -941,16 +978,12 @@
         // Show success
         setState('result');
         
-        // Handle completion for minimize/restore
-        handleGenerationComplete();
       } else {
         console.log('Setting state to error (no successes)');
         const analyticsEvent = isProductPage ? 'product_failure' : 'homepage_failure';
         trackAnalytics(analyticsEvent, failureCount);
         showRandomError();
         
-        // Handle completion for minimize/restore (even on error)
-        handleGenerationComplete();
       }
       
     } catch (error) {
@@ -958,8 +991,6 @@
       showRandomError();
       trackAnalytics('homepage_failure', 1);
       
-      // Handle completion for minimize/restore (even on error)
-      handleGenerationComplete();
     }
   }
 
@@ -1023,178 +1054,133 @@
   }
 
   // =================================================
-  // MINIMIZE/RESTORE FUNCTIONALITY
+  // FACTS DISPLAY FUNCTIONALITY
   // =================================================
 
-  // Session storage keys
-  const STORAGE_KEYS = {
-    PROCESSING_STATE: 'ai_tryon_processing_state',
-    USER_PHOTO: 'ai_tryon_user_photo',
-    PROCESS_TYPE: 'ai_tryon_process_type'
-  };
+  function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
 
-  // Initialize minimize/restore functionality
-  function initMinimizeRestore() {
-    // Cache minimize/restore elements
-    const isProductPage = window.location.pathname.includes('/products/');
+  function startFactsDisplay() {
+    console.log('Starting facts display...');
+    console.log('Facts container found:', !!elements.factsContainer);
+    console.log('Current state:', currentState);
     
-    if (isProductPage) {
-      elements.minimizeBtn = document.getElementById('minimize-loading-btn');
-      elements.minimizedIndicator = document.getElementById('ai-minimized-indicator');
-      elements.restoreBtn = document.getElementById('restore-loading-btn');
+    // Clear any existing timers
+    stopFactsDisplay();
+    
+    // Initialize shuffled facts if not already done or if we've run out
+    if (shuffledFacts.length === 0 || currentFactIndex >= shuffledFacts.length) {
+      shuffledFacts = shuffleArray(FASHION_FACTS);
+      currentFactIndex = 0;
+      console.log('Shuffled facts initialized:', shuffledFacts.length, 'facts');
+    }
+    
+    // Hide facts container initially
+    if (elements.factsContainer) {
+      elements.factsContainer.classList.remove('ai-facts-visible');
+      console.log('Facts container hidden initially');
     } else {
-      elements.minimizeBtn = document.getElementById('minimize-homepage-loading-btn');
-      elements.minimizedIndicator = document.getElementById('ai-homepage-minimized-indicator');
-      elements.restoreBtn = document.getElementById('restore-homepage-loading-btn');
-    }
-
-    // Setup minimize/restore event listeners
-    if (elements.minimizeBtn) {
-      elements.minimizeBtn.addEventListener('click', minimizeLoading);
+      console.error('Facts container not found!');
+      return;
     }
     
-    if (elements.restoreBtn) {
-      elements.restoreBtn.addEventListener('click', restoreLoading);
-    }
-
-    if (elements.minimizedIndicator) {
-      elements.minimizedIndicator.addEventListener('click', restoreLoading);
-    }
-
-    // Check for ongoing process on page load
-    checkOngoingProcess();
-  }
-
-  function minimizeLoading() {
-    if (!elements.modal || !elements.minimizedIndicator) return;
-
-    // Save current processing state
-    saveProcessingState();
-
-    // Hide modal with animation
-    elements.modal.classList.add('minimized');
-    
-    // Move indicator to body to ensure it floats on viewport
-    if (elements.minimizedIndicator.parentElement !== document.body) {
-      document.body.appendChild(elements.minimizedIndicator);
-    }
-    
-    // Show minimized indicator properly
-    setTimeout(() => {
-      elements.minimizedIndicator.style.display = 'flex';
-      elements.minimizedIndicator.style.visibility = 'visible';
-      elements.minimizedIndicator.style.opacity = '1';
-    }, 150);
-
-    console.log('Modal minimized - continuing generation in background');
-  }
-
-  function restoreLoading() {
-    if (!elements.modal || !elements.minimizedIndicator) return;
-
-    // Hide minimized indicator completely and remove completion state
-    elements.minimizedIndicator.style.display = 'none';
-    elements.minimizedIndicator.style.visibility = 'hidden';
-    elements.minimizedIndicator.style.opacity = '0';
-    elements.minimizedIndicator.classList.remove('ai-completed');
-    
-    // Reset minimized indicator text and button for next time
-    const miniText = elements.minimizedIndicator.querySelector('.ai-mini-text');
-    if (miniText) {
-      miniText.textContent = 'Creating your perfect look...';
-    }
-    
-    const restoreBtn = elements.minimizedIndicator.querySelector('.ai-restore-btn');
-    if (restoreBtn) {
-      restoreBtn.textContent = 'View Progress';
-    }
-    
-    // Show modal with animation
-    elements.modal.classList.remove('minimized');
-
-    console.log('Modal restored');
-  }
-
-  function saveProcessingState() {
-    const isProductPage = window.location.pathname.includes('/products/');
-    const state = {
-      isProcessing: true,
-      timestamp: Date.now(),
-      processType: isProductPage ? 'product' : 'homepage',
-      userPhotoData: userPhotoData
-    };
-
-    sessionStorage.setItem(STORAGE_KEYS.PROCESSING_STATE, JSON.stringify(state));
-    
-    if (userPhotoData) {
-      sessionStorage.setItem(STORAGE_KEYS.USER_PHOTO, userPhotoData);
-    }
-  }
-
-  function checkOngoingProcess() {
-    const savedState = sessionStorage.getItem(STORAGE_KEYS.PROCESSING_STATE);
-    
-    if (savedState) {
-      try {
-        const state = JSON.parse(savedState);
-        const isRecent = (Date.now() - state.timestamp) < 120000; // 2 minutes
+    // Start the 10-second timer to begin showing facts
+    console.log('Setting 10-second timer...');
+    factsStartTimer = setTimeout(() => {
+      console.log('10-second timer fired. Current state:', currentState);
+      console.log('Facts container still exists:', !!elements.factsContainer);
+      
+      if (elements.factsContainer && currentState === 'loading') {
+        console.log('Showing facts container...');
+        // Show the facts container with animation using class
+        elements.factsContainer.classList.add('ai-facts-visible');
+        console.log('Facts container made visible with class');
         
-        if (state.isProcessing && isRecent && elements.minimizedIndicator) {
-          // Show minimized indicator for ongoing process
-          elements.minimizedIndicator.style.display = 'flex';
-          console.log('Restored minimized state for ongoing process');
-        } else {
-          // Clean up old state
-          clearProcessingState();
-        }
-      } catch (error) {
-        console.log('Error checking ongoing process:', error);
-        clearProcessingState();
+        // Show first fact immediately
+        showNextFact();
+        
+        // Set up interval to show new facts every 12 seconds
+        factsTimer = setInterval(() => {
+          console.log('12-second timer fired. State:', currentState);
+          if (currentState === 'loading') {
+            showNextFact();
+          } else {
+            console.log('Stopping facts - state changed to:', currentState);
+            stopFactsDisplay();
+          }
+        }, 12000);
+        
+        console.log('Facts display fully started!');
+      } else {
+        console.log('Not showing facts - container missing or state changed:', {
+          hasContainer: !!elements.factsContainer,
+          currentState: currentState
+        });
       }
-    }
+    }, 10000); // Wait 10 seconds before starting facts
   }
 
-  function clearProcessingState() {
-    sessionStorage.removeItem(STORAGE_KEYS.PROCESSING_STATE);
-    sessionStorage.removeItem(STORAGE_KEYS.USER_PHOTO);
+  function showNextFact() {
+    console.log('showNextFact called. Container exists:', !!elements.factsContainer, 'State:', currentState);
     
-    if (elements.minimizedIndicator) {
-      elements.minimizedIndicator.style.display = 'none';
+    if (!elements.factsContainer || currentState !== 'loading') {
+      console.log('Stopping showNextFact - no container or wrong state');
+      return;
     }
-  }
-
-  function handleGenerationComplete() {
-    // Clear processing state when generation completes
-    clearProcessingState();
     
-    // If modal is minimized, show completion notification
-    if (elements.modal && elements.modal.classList.contains('minimized')) {
-      showCompletionNotification();
+    // Get next fact
+    if (currentFactIndex >= shuffledFacts.length) {
+      // Reshuffle when we run out
+      shuffledFacts = shuffleArray(FASHION_FACTS);
+      currentFactIndex = 0;
+      console.log('Reshuffled facts');
+    }
+    
+    const fact = shuffledFacts[currentFactIndex];
+    currentFactIndex++;
+    console.log('Selected fact:', fact);
+    
+    // Find the facts text element and update with fade transition
+    const factsText = elements.factsContainer.querySelector('.ai-facts-text');
+    console.log('Facts text element found:', !!factsText);
+    
+    if (factsText) {
+      // Fade out
+      factsText.style.opacity = '0';
+      
+      setTimeout(() => {
+        // Update text and fade in
+        factsText.textContent = fact;
+        factsText.style.opacity = '1';
+        console.log('Fact displayed:', fact);
+      }, 300);
+    } else {
+      console.error('Facts text element not found within container');
     }
   }
 
-  function showCompletionNotification() {
-    // Update minimized indicator to show completion
-    if (elements.minimizedIndicator) {
-      elements.minimizedIndicator.classList.add('ai-completed');
-      
-      // Update the text content
-      const miniText = elements.minimizedIndicator.querySelector('.ai-mini-text');
-      if (miniText) {
-        miniText.textContent = 'Your try-on is ready!';
-      }
-      
-      // Update button text
-      const restoreBtn = elements.minimizedIndicator.querySelector('.ai-restore-btn');
-      if (restoreBtn) {
-        restoreBtn.textContent = 'View Results';
-      }
+  function stopFactsDisplay() {
+    // Clear all timers
+    if (factsStartTimer) {
+      clearTimeout(factsStartTimer);
+      factsStartTimer = null;
+    }
+    
+    if (factsTimer) {
+      clearInterval(factsTimer);
+      factsTimer = null;
+    }
+    
+    // Hide facts container
+    if (elements.factsContainer) {
+      elements.factsContainer.classList.remove('ai-facts-visible');
     }
   }
-
-  // Call initialization after the main init function
-  setTimeout(() => {
-    initMinimizeRestore();
-  }, 100);
 
 })();

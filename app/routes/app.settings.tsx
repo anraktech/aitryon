@@ -116,6 +116,18 @@ export default function Settings() {
                 </BlockStack>
                 
                 <BlockStack gap="400">
+                  <Banner tone="critical" icon={AlertCircleIcon}>
+                    <BlockStack gap="200">
+                      <Text as="p" variant="bodyMd" fontWeight="semibold">
+                        ⚠️ IMPORTANT: You MUST recharge your OpenRouter account with at least $5 for the app to work!
+                      </Text>
+                      <Text as="p" variant="bodyMd">
+                        Many users create API keys but forget to add credits. Without credits, all AI try-on requests will fail. 
+                        After creating your API key, visit <Link url="https://openrouter.ai/credits" target="_blank">OpenRouter Credits</Link> to add at least $5.
+                      </Text>
+                    </BlockStack>
+                  </Banner>
+                  
                   <Banner tone="info">
                     <BlockStack gap="200">
                       <Text as="p" variant="bodyMd">
@@ -126,7 +138,8 @@ export default function Settings() {
                         <li>Sign up or log in to your account</li>
                         <li>Navigate to API Keys section</li>
                         <li>Create a new API key</li>
-                        <li>Copy and paste it here</li>
+                        <li><strong>Add at least $5 in credits</strong></li>
+                        <li>Copy and paste the API key here</li>
                       </ol>
                     </BlockStack>
                   </Banner>
@@ -137,7 +150,7 @@ export default function Settings() {
                     value={apiKey}
                     onChange={setApiKey}
                     placeholder="sk-or-v1-..."
-                    helpText="Your API key will be securely stored and used for AI image generation"
+                    helpText="Your API key will be securely stored and used for AI image generation. Remember: You must add at least $5 in credits to your OpenRouter account!"
                     autoComplete="off"
                   />
                   
@@ -207,7 +220,8 @@ export default function Settings() {
                 
                 <Banner tone="warning" icon={AlertCircleIcon}>
                   <Text as="p" variant="bodyMd">
-                    Remember to monitor your OpenRouter credit balance regularly. 
+                    <strong>Credit Monitoring:</strong> Always ensure your OpenRouter account has sufficient credits (minimum $5 recommended). 
+                    Failed generations often occur due to insufficient credits, not app issues. 
                     Visit your <Link url="https://openrouter.ai/credits" target="_blank">OpenRouter dashboard</Link> to check remaining credits.
                   </Text>
                 </Banner>
@@ -220,17 +234,20 @@ export default function Settings() {
                   Important Information
                 </Text>
                 <BlockStack gap="200">
-                  <Text as="p" variant="bodyMd">
-                    • Each AI try-on generation consumes OpenRouter credits
+                  <Text as="p" variant="bodyMd" fontWeight="semibold" tone="critical">
+                    • 🚨 CRITICAL: Add at least $5 in credits to your OpenRouter account or the app will NOT work
                   </Text>
                   <Text as="p" variant="bodyMd">
-                    • Ensure your API key has sufficient credits for operations
+                    • Each AI try-on generation consumes OpenRouter credits (approximately $0.01-$0.05 per generation)
+                  </Text>
+                  <Text as="p" variant="bodyMd">
+                    • Most support requests are due to insufficient credits, not app bugs
                   </Text>
                   <Text as="p" variant="bodyMd">
                     • Analytics are updated in real-time as customers use the feature
                   </Text>
                   <Text as="p" variant="bodyMd">
-                    • Failed generations may occur due to invalid images or API limits
+                    • Failed generations may occur due to insufficient credits, invalid images, or API limits
                   </Text>
                 </BlockStack>
               </BlockStack>
