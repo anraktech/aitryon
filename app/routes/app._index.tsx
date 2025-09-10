@@ -188,7 +188,7 @@ export default function Index() {
                 </List>
                 <Box padding="300" background="bg-surface-critical">
                   <Text variant="bodyMd" as="p" color="text-critical">
-                    🚨 <strong>CRITICAL:</strong> You MUST add at least $5 in credits to your OpenRouter account or the app will NOT work! Each try-on costs approximately $0.01-0.05.
+                    🚨 <strong>CRITICAL:</strong> You MUST add at least $5 in credits to your OpenRouter account or the app will NOT work! Each try-on costs approximately $0.10-$0.20.
                   </Text>
                 </Box>
               </BlockStack>

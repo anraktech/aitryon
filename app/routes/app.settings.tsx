@@ -238,7 +238,7 @@ export default function Settings() {
                     • 🚨 CRITICAL: Add at least $5 in credits to your OpenRouter account or the app will NOT work
                   </Text>
                   <Text as="p" variant="bodyMd">
-                    • Each AI try-on generation consumes OpenRouter credits (approximately $0.01-$0.05 per generation)
+                    • Each AI try-on generation consumes OpenRouter credits (approximately $0.10-$0.20 per generation)
                   </Text>
                   <Text as="p" variant="bodyMd">
                     • Most support requests are due to insufficient credits, not app bugs
