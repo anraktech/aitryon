@@ -1,8 +1,5 @@
--- CreateSchema
-CREATE SCHEMA IF NOT EXISTS "public";
-
 -- CreateTable
-CREATE TABLE "public"."Session" (
+CREATE TABLE "Session" (
     "id" TEXT NOT NULL,
     "shop" TEXT NOT NULL,
     "state" TEXT NOT NULL,
@@ -23,7 +20,7 @@ CREATE TABLE "public"."Session" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."ShopSettings" (
+CREATE TABLE "ShopSettings" (
     "id" TEXT NOT NULL,
     "shop" TEXT NOT NULL,
     "openRouterKey" TEXT,
@@ -34,7 +31,7 @@ CREATE TABLE "public"."ShopSettings" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."AITryOnAnalytics" (
+CREATE TABLE "AITryOnAnalytics" (
     "id" TEXT NOT NULL,
     "shop" TEXT NOT NULL,
     "successful" INTEGER NOT NULL DEFAULT 0,
@@ -46,4 +43,4 @@ CREATE TABLE "public"."AITryOnAnalytics" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ShopSettings_shop_key" ON "public"."ShopSettings"("shop");
+CREATE UNIQUE INDEX "ShopSettings_shop_key" ON "ShopSettings"("shop");

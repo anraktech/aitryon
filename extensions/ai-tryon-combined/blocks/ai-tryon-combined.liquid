@@ -148,6 +148,13 @@
         
         <div class="ai-result-image-container">
           <img id="generated-image" alt="Generated try-on">
+          <button class="ai-refresh-btn" id="refresh-to-default-btn" aria-label="Refresh to Default" title="Start Over">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/>
+              <polyline points="1 20 1 14 7 14"/>
+              <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+          </button>
         </div>
         
         <div class="ai-result-actions">
@@ -179,15 +186,9 @@
   </div>
 </div>
 
-<!-- Professional Floating Bottom Bar -->
-<div id="ai-minimized-indicator" class="ai-minimized-indicator" style="display: none;">
-  <div class="ai-minimized-content">
-    <div class="ai-mini-spinner"></div>
-    <span class="ai-mini-text">Creating your perfect look...</span>
-  </div>
-  <button class="ai-restore-btn" id="restore-loading-btn" aria-label="View Progress">
-    View Progress
-  </button>
+<!-- Robot AI Floating Icon - HIDDEN BY DEFAULT -->
+<div id="ai-minimized-indicator" class="ai-minimized-indicator" style="display: none !important; visibility: hidden !important; opacity: 0 !important;">
+  <div class="ai-minimized-content"></div>
 </div>
 
 {% elsif request.page_type == 'index' %}
@@ -350,18 +351,8 @@
 </div>
 
 <!-- Homepage Minimized Loading Indicator -->
-<div id="ai-homepage-minimized-indicator" class="ai-minimized-indicator" style="display: none;">
-  <div class="ai-minimized-content">
-    <div class="ai-mini-spinner"></div>
-    <span class="ai-mini-text">Personalizing...</span>
-  </div>
-  <button class="ai-restore-btn" id="restore-homepage-loading-btn" aria-label="Restore">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="15 3 21 3 21 9"></polyline>
-      <polyline points="9 21 3 21 3 15"></polyline>
-      <line x1="21" y1="3" x2="14" y2="10"></line>
-      <line x1="3" y1="21" x2="10" y2="14"></line>
-    </svg>
-  </button>
+<!-- Robot AI Floating Icon for Homepage - HIDDEN BY DEFAULT -->
+<div id="ai-homepage-minimized-indicator" class="ai-minimized-indicator" style="display: none !important; visibility: hidden !important; opacity: 0 !important;">
+  <div class="ai-minimized-content"></div>
 </div>
 {% endif %}

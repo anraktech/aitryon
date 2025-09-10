@@ -186,6 +186,18 @@
       if (elements.cameraInput) elements.cameraInput.value = '';
       setState('upload');
     });
+    
+    // Refresh to default button
+    const refreshBtn = document.getElementById('refresh-to-default-btn');
+    refreshBtn?.addEventListener('click', () => {
+      // Reset to default state
+      userPhotoData = null;
+      if (elements.photoInput) elements.photoInput.value = '';
+      if (elements.cameraInput) elements.cameraInput.value = '';
+      resetState();
+      setState('upload');
+      console.log('Refreshed to default state');
+    });
   }
 
   function collectProductImages() {
@@ -280,6 +292,14 @@
     if (elements.modal.classList.contains('minimized') && currentState === 'loading') {
       restoreLoading();
       return;
+    }
+    
+    // Hide minimized indicator when opening a fresh modal
+    if (elements.minimizedIndicator) {
+      elements.minimizedIndicator.style.display = 'none';
+      elements.minimizedIndicator.style.visibility = 'hidden';
+      elements.minimizedIndicator.style.opacity = '0';
+      elements.minimizedIndicator.classList.remove('ai-completed');
     }
     
     // Move modal to body to ensure it's not constrained by parent containers
@@ -465,6 +485,14 @@
     if (elements.resultSection) elements.resultSection.style.display = 'none';
     if (elements.errorSection) elements.errorSection.style.display = 'none';
     
+    // Hide minimized indicator when showing any non-loading state or when modal is open
+    if (state !== 'loading' && elements.minimizedIndicator) {
+      elements.minimizedIndicator.style.display = 'none';
+      elements.minimizedIndicator.style.visibility = 'hidden';
+      elements.minimizedIndicator.style.opacity = '0';
+      elements.minimizedIndicator.classList.remove('ai-completed');
+    }
+    
     // Show current state
     switch(state) {
       case 'upload':
@@ -478,6 +506,17 @@
         break;
       case 'result':
         if (elements.resultSection) elements.resultSection.style.display = 'block';
+        // Ensure minimized indicator is hidden when results are shown
+        if (elements.minimizedIndicator) {
+          elements.minimizedIndicator.style.display = 'none';
+          elements.minimizedIndicator.style.visibility = 'hidden';
+          elements.minimizedIndicator.style.opacity = '0';
+          elements.minimizedIndicator.classList.remove('ai-completed');
+        }
+        // Remove minimized class from modal
+        if (elements.modal) {
+          elements.modal.classList.remove('minimized');
+        }
         break;
       case 'error':
         if (elements.errorSection) elements.errorSection.style.display = 'block';
@@ -1035,9 +1074,16 @@
     // Hide modal with animation
     elements.modal.classList.add('minimized');
     
-    // Show minimized indicator
+    // Move indicator to body to ensure it floats on viewport
+    if (elements.minimizedIndicator.parentElement !== document.body) {
+      document.body.appendChild(elements.minimizedIndicator);
+    }
+    
+    // Show minimized indicator properly
     setTimeout(() => {
       elements.minimizedIndicator.style.display = 'flex';
+      elements.minimizedIndicator.style.visibility = 'visible';
+      elements.minimizedIndicator.style.opacity = '1';
     }, 150);
 
     console.log('Modal minimized - continuing generation in background');
@@ -1046,8 +1092,10 @@
   function restoreLoading() {
     if (!elements.modal || !elements.minimizedIndicator) return;
 
-    // Hide minimized indicator and remove completion state
+    // Hide minimized indicator completely and remove completion state
     elements.minimizedIndicator.style.display = 'none';
+    elements.minimizedIndicator.style.visibility = 'hidden';
+    elements.minimizedIndicator.style.opacity = '0';
     elements.minimizedIndicator.classList.remove('ai-completed');
     
     // Reset minimized indicator text and button for next time
