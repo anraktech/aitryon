@@ -6,13 +6,6 @@
   const CLOUDINARY_CLOUD_NAME = 'dbn97imck';
   const CLOUDINARY_UPLOAD_PRESET = 'shopify-tryon';
   
-  // Error messages for homepage
-  const HOMEPAGE_ERROR_MESSAGES = [
-    { title: "Oops!", message: "Our AI stylist is taking a creative break. Please try again!" },
-    { title: "Sorry!", message: "The fashion transformation chamber needs a moment to reboot." },
-    { title: "Hmm...", message: "Looks like our style algorithms are having a dance party. Try again?" },
-    { title: "Oh no!", message: "The personalization engine hiccupped. Let's give it another go!" }
-  ];
 
   // Compliments for successful results
   const COMPLIMENT_MESSAGES = [
@@ -181,43 +174,9 @@
       
       // Facts container
       elements.factsContainer = document.getElementById('loading-facts');
-    } else {
-      // Homepage elements
-      elements.modal = document.getElementById('ai-homepage-modal');
-      elements.trigger = document.getElementById('ai-homepage-trigger');
-      elements.closeBtn = elements.modal?.querySelector('.ai-modal-close');
-      
-      // Sections
-      elements.uploadSection = document.getElementById('homepage-upload-section');
-      elements.previewSection = document.getElementById('homepage-preview-section');
-      elements.loadingSection = document.getElementById('homepage-loading-section');
-      elements.resultSection = document.getElementById('homepage-result-section');
-      elements.errorSection = document.getElementById('homepage-error-section');
-      
-      // Upload elements
-      elements.uploadPhotoBtn = document.getElementById('homepage-upload-photo-btn');
-      elements.useCameraBtn = document.getElementById('homepage-use-camera-btn');
-      elements.photoInput = document.getElementById('homepage-photo-input');
-      elements.cameraInput = document.getElementById('homepage-camera-input');
-      
-      // Preview elements
-      elements.userPhotoPreview = document.getElementById('homepage-user-photo-preview');
-      elements.changePhotoBtn = document.getElementById('homepage-change-photo-btn');
-      elements.generateBtn = document.getElementById('homepage-generate-btn');
-      
-      // Result elements
-      elements.exploreBtn = document.getElementById('homepage-explore-btn');
-      
-      // Error elements
-      elements.errorTitle = document.getElementById('homepage-error-title');
-      elements.errorMessage = document.getElementById('homepage-error-message');
-      elements.retryBtn = document.getElementById('homepage-retry-btn');
-      
-      // Facts container
-      elements.factsContainer = document.getElementById('homepage-loading-facts');
     }
     
-    console.log('Page type:', isProductPage ? 'Product' : 'Homepage');
+    console.log('Page type:', isProductPage ? 'Product' : 'Other');
     console.log('Modal found:', !!elements.modal);
     console.log('Trigger found:', !!elements.trigger);
   }
@@ -387,6 +346,7 @@
     stopFactsDisplay();
     resetState();
   }
+
 
   async function handleAddToCart() {
     const isProductPage = window.location.pathname.includes('/products/');
@@ -965,7 +925,7 @@
       console.log(`Processing completed: ${successCount} successes, ${failureCount} failures`);
       if (successCount > 0) {
         console.log('Setting state to result (success)');
-        const analyticsEvent = isProductPage ? 'product_success' : 'homepage_success';
+        const analyticsEvent = 'product_success';
         trackAnalytics(analyticsEvent, successCount);
         
         // Show random compliment for product pages
@@ -980,26 +940,20 @@
         
       } else {
         console.log('Setting state to error (no successes)');
-        const analyticsEvent = isProductPage ? 'product_failure' : 'homepage_failure';
+        const analyticsEvent = 'product_failure';
         trackAnalytics(analyticsEvent, failureCount);
-        showRandomError();
+        showError("Something went wrong. Please try again.");
         
       }
       
     } catch (error) {
       console.error('Personalization error:', error);
-      showRandomError();
-      trackAnalytics('homepage_failure', 1);
+      showError("Something went wrong. Please try again.");
+      trackAnalytics('product_failure', 1);
       
     }
   }
 
-  function showRandomError() {
-    const error = HOMEPAGE_ERROR_MESSAGES[Math.floor(Math.random() * HOMEPAGE_ERROR_MESSAGES.length)];
-    elements.errorTitle.textContent = error.title;
-    elements.errorMessage.textContent = error.message;
-    setState('error');
-  }
 
   function showError(message) {
     elements.errorTitle.textContent = "Error";
@@ -1035,7 +989,7 @@
 
   function getOpenRouterKey() {
     // Get API key from theme extension settings
-    const container = document.querySelector('.ai-tryon-container') || document.querySelector('.ai-homepage-container');
+    const container = document.querySelector('.ai-tryon-container');
     const apiKey = container?.dataset.apiKey;
     
     console.log('API Key retrieved from theme settings:', apiKey ? 'Found' : 'Not found');

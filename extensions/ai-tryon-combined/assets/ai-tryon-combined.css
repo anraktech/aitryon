@@ -1,7 +1,7 @@
-/* AI Try-On Combined Styles - Product Pages + Homepage */
+/* AI Try-On Product Styles - Product Pages Only */
 
 /* =================================================
-   SHARED STYLES - Used by both product and homepage
+   PRODUCT PAGE STYLES - AI Try-On functionality
    ================================================= */
 
 /* AI Try-On Button - Product Version */
@@ -48,42 +48,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Homepage Button Styles - Graceful & Compact */
-.ai-homepage-container {
-  margin: 0 !important;
-  max-width: 1200px;
-  padding: 0 !important;
-}
-
-.ai-homepage-hero {
-  text-align: center;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-.ai-homepage-button {
-  display: inline-flex !important;
-  align-items: center;
-  padding: 12px 24px !important;
-  border-radius: 8px;
-  border: 1px solid #e5e5e5 !important;
-  background: #ffffff !important;
-  color: #1a1a1a !important;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-  font-weight: 500;
-  font-size: 14px !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif !important;
-  margin: 0 !important;
-}
-
-.ai-homepage-button:hover {
-  background: #f8f9fa;
-  border-color: #d1d5db;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
 
 .ai-button-content {
   display: flex;
@@ -554,7 +518,6 @@
 
 /* Specific User Photo Sizing */
 #user-photo-preview,
-#homepage-user-photo-preview,
 #product-image-preview {
   max-width: 100% !important;
   max-height: 100% !important;
@@ -1195,10 +1158,6 @@
     flex-direction: column;
   }
   
-  .ai-homepage-button {
-    padding: 10px 20px;
-    font-size: 13px;
-  }
   
   .ai-button-main-text {
     font-size: 16px;
@@ -1232,7 +1191,6 @@
   }
   
   #user-photo-preview,
-  #homepage-user-photo-preview,
   #product-image-preview {
     max-width: 100% !important;
     max-height: 100% !important;

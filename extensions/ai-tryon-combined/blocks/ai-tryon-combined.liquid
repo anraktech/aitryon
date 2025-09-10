@@ -1,6 +1,6 @@
 {% schema %}
 {
-  "name": "AI Try-On Homepage",
+  "name": "AI Try-On Product",
   "target": "section",
   "stylesheet": "ai-tryon-combined.css",
   "javascript": "ai-tryon-combined.js",
@@ -30,6 +30,116 @@
       "default": "#ffffff"
     },
     {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button Roundness",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "button_font_family",
+      "label": "Button Text Font",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Theme Default"
+        },
+        {
+          "value": "var(--font-body-family)",
+          "label": "Theme Body Font"
+        },
+        {
+          "value": "var(--font-heading-family)",
+          "label": "Theme Heading Font"
+        },
+        {
+          "value": "'Helvetica Neue', Arial, sans-serif",
+          "label": "Helvetica Neue"
+        },
+        {
+          "value": "Inter, sans-serif",
+          "label": "Inter"
+        },
+        {
+          "value": "Poppins, sans-serif",
+          "label": "Poppins"
+        },
+        {
+          "value": "Roboto, sans-serif",
+          "label": "Roboto"
+        },
+        {
+          "value": "Montserrat, sans-serif",
+          "label": "Montserrat"
+        },
+        {
+          "value": "'Open Sans', sans-serif",
+          "label": "Open Sans"
+        },
+        {
+          "value": "Lato, sans-serif",
+          "label": "Lato"
+        },
+        {
+          "value": "'Source Sans Pro', sans-serif",
+          "label": "Source Sans Pro"
+        },
+        {
+          "value": "Arial, sans-serif",
+          "label": "Arial"
+        },
+        {
+          "value": "Georgia, serif",
+          "label": "Georgia"
+        },
+        {
+          "value": "'Times New Roman', serif",
+          "label": "Times New Roman"
+        },
+        {
+          "value": "'Courier New', monospace",
+          "label": "Courier New"
+        },
+        {
+          "value": "'Trebuchet MS', sans-serif",
+          "label": "Trebuchet MS"
+        },
+        {
+          "value": "Verdana, sans-serif",
+          "label": "Verdana"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button Text Weight",
+      "default": "normal",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "bold",
+          "label": "Bold"
+        },
+        {
+          "value": "lighter",
+          "label": "Lighter"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold"
+        }
+      ]
+    },
+    {
       "type": "text",
       "id": "openrouter_api_key",
       "label": "OpenRouter API Key",
@@ -43,11 +153,15 @@
 
 {% if request.page_type == 'product' %}
 <!-- PRODUCT PAGE VERSION -->
-<div class="ai-tryon-container" data-product-id="{{ product.id }}" data-product-image="{{ product.featured_image | img_url: 'master' }}" data-api-key="{{ block.settings.openrouter_api_key }}">
+<div class="ai-tryon-container" 
+  data-product-id="{{ product.id }}" 
+  data-product-image="{{ product.featured_image | image_url: 'master' }}" 
+  data-api-key="{{ block.settings.openrouter_api_key }}"
+>
   <button 
     class="ai-tryon-button ai-product-button" 
     id="ai-tryon-product-trigger"
-    style="background-color: {{ block.settings.button_color }}; border-color: {{ block.settings.button_color }}; color: {{ block.settings.button_text_color }};"
+    style="background-color: {{ block.settings.button_color }}; border-color: {{ block.settings.button_color }}; color: {{ block.settings.button_text_color }}; border-radius: {{ block.settings.button_border_radius }}px; font-family: {{ block.settings.button_font_family }}; font-weight: {{ block.settings.button_font_weight }};"
   >
     {{ block.settings.button_text | default: 'Try It On' }}
   </button>
@@ -181,171 +295,10 @@
     </div>
     
     <div class="ai-modal-footer">
-      <p class="ai-powered-by">Powered by <a href="https://anrak.io" target="_blank" rel="noopener">Anrak.io</a></p>
       <p class="ai-disclaimer">Use only your own photos | No nudity | AI-generated results may vary | Please refer to terms for more</p>
     </div>
   </div>
 </div>
 
-
-{% elsif request.page_type == 'index' %}
-<div class="ai-homepage-container" data-api-key="{{ block.settings.openrouter_api_key }}">
-  <div class="ai-homepage-hero">
-    <button 
-      class="ai-homepage-button" 
-      id="ai-homepage-trigger"
-      style="background: linear-gradient(135deg, {{ block.settings.button_color }} 0%, {{ block.settings.button_color | color_darken: 15 }} 100%); color: {{ block.settings.button_text_color }};"
-    >
-      <div class="ai-button-content">
-        <span class="ai-button-main-text">{{ block.settings.button_text }}</span>
-      </div>
-    </button>
-  </div>
-</div>
-
-<!-- Shared Modal (same as product page) -->
-<div id="ai-homepage-modal" class="ai-modal" style="display: none;">
-  <div class="ai-modal-overlay"></div>
-  <div class="ai-modal-content">
-    <button class="ai-modal-close" aria-label="Close">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="18" y1="6" x2="6" y2="18"/>
-        <line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
-    
-    <div class="ai-modal-header ai-homepage-header">
-      <h2 class="ai-modal-title">Personalize Your Experience</h2>
-      <p class="ai-modal-subtitle">Upload your photo to personalize your experience</p>
-    </div>
-    
-    <div class="ai-modal-body">
-      <!-- Upload State -->
-      <div class="ai-upload-section" id="homepage-upload-section">
-        <div class="ai-feature-preview">
-          <div class="ai-preview-cards">
-            <div class="ai-preview-card">
-              <div class="ai-preview-before">Before</div>
-              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23f3f4f6'/%3E%3C/svg%3E" alt="Product">
-            </div>
-            <div class="ai-preview-arrow">→</div>
-            <div class="ai-preview-card">
-              <div class="ai-preview-after">After</div>
-              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23e5e7eb'/%3E%3C/svg%3E" alt="Personalized">
-            </div>
-          </div>
-        </div>
-        
-        <div class="ai-upload-options">
-          <button class="ai-option-btn" id="homepage-upload-photo-btn">
-            <div class="ai-option-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-            </div>
-            <span class="ai-option-label">Upload Photo</span>
-          </button>
-          
-          <button class="ai-option-btn" id="homepage-use-camera-btn">
-            <div class="ai-option-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
-            </div>
-            <span class="ai-option-label">Use Camera</span>
-          </button>
-        </div>
-        
-        <input type="file" id="homepage-photo-input" accept="image/*" style="display: none;">
-        <input type="file" id="homepage-camera-input" accept="image/*" capture="camera" style="display: none;">
-      </div>
-      
-      <!-- Preview State -->
-      <div class="ai-preview-section" id="homepage-preview-section" style="display: none;">
-        <div class="ai-images-preview">
-          <div class="ai-image-preview">
-            <img id="homepage-user-photo-preview" alt="Your photo">
-          </div>
-        </div>
-        
-        <div class="ai-personalize-info">
-          <p class="ai-info-text">We'll use your photo to personalize all product images across the store</p>
-        </div>
-        
-        <div class="ai-button-group">
-          <button class="ai-change-photo" id="homepage-change-photo-btn">Change Photo</button>
-          <button class="ai-generate-btn ai-personalize-btn" id="homepage-generate-btn">
-            <span class="ai-generate-text">Start Personalizing</span>
-          </button>
-        </div>
-      </div>
-      
-      <!-- Loading State -->
-      <div class="ai-loading-section" id="homepage-loading-section" style="display: none;">
-        <div class="ai-loading-animation">
-          <div class="ai-magic-loading">
-            <div class="ai-magic-circle"></div>
-            <div class="ai-magic-circle"></div>
-            <div class="ai-magic-circle"></div>
-          </div>
-        </div>
-        <p class="ai-loading-text">Creating your personalized shopping experience...</p>
-        <p class="ai-loading-subtext">This may take a moment as we transform the entire catalog</p>
-        
-        <!-- Fashion Facts Container -->
-        <div id="homepage-loading-facts" class="ai-loading-facts">
-          <div class="ai-facts-header">
-            <span class="ai-facts-icon">💡</span>
-            <h4 class="ai-facts-title">Style Tip</h4>
-          </div>
-          <p class="ai-facts-text">Fashion insights will appear here...</p>
-        </div>
-      </div>
-      
-      <!-- Result State -->
-      <div class="ai-result-section" id="homepage-result-section" style="display: none;">
-        <div class="ai-success-animation">
-          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ai-success-icon">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-            <polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>
-        </div>
-        
-        <div class="ai-result-message">
-          <h3 class="ai-compliment">Your Store is Ready!</h3>
-          <p class="ai-compliment-sub">All products are now personalized just for you</p>
-        </div>
-        
-        <div class="ai-result-actions">
-          <button class="ai-explore-btn" id="homepage-explore-btn">
-            Explore Your Personalized Store
-          </button>
-        </div>
-      </div>
-      
-      <!-- Error State -->
-      <div class="ai-error-section" id="homepage-error-section" style="display: none;">
-        <div class="ai-error-icon">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-        </div>
-        <h3 class="ai-error-title" id="homepage-error-title">Oops!</h3>
-        <p class="ai-error-message" id="homepage-error-message">Something went wrong. Please try again.</p>
-        <button class="ai-retry-btn" id="homepage-retry-btn">Try Again</button>
-      </div>
-    </div>
-    
-    <div class="ai-modal-footer">
-      <p class="ai-powered-by">Powered by <a href="https://anrak.io" target="_blank" rel="noopener">Anrak.io</a></p>
-      <p class="ai-disclaimer">Use only your own photos | No nudity | AI-generated results may vary | Please refer to terms for more</p>
-    </div>
-  </div>
-</div>
 
 {% endif %}
