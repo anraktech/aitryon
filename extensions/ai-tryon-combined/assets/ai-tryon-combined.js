@@ -73,11 +73,145 @@
     "Quality cotton improves with washing, becoming softer over time."
   ];
 
-  // Facts display management
+  // Fashion Quiz Questions
+  const FASHION_QUIZ = [
+    {
+      question: "Which fabric was once more valuable than gold?",
+      options: ["Silk", "Cashmere", "Linen"],
+      correct: 0
+    },
+    {
+      question: "What did Coco Chanel famously liberate women from?",
+      options: ["High heels", "Corsets", "Long skirts"],
+      correct: 1
+    },
+    {
+      question: "Which fashion item was originally underwear?",
+      options: ["T-shirt", "Jeans", "Sneakers"],
+      correct: 0
+    },
+    {
+      question: "What color was considered masculine until the 1940s?",
+      options: ["Pink", "Purple", "Blue"],
+      correct: 0
+    },
+    {
+      question: "Which designer created the 'New Look' in 1947?",
+      options: ["Chanel", "Dior", "Versace"],
+      correct: 1
+    },
+    {
+      question: "What were high heels originally designed for?",
+      options: ["Dancing", "Horse riding", "Status symbol"],
+      correct: 1
+    },
+    {
+      question: "Which fashion week is the oldest?",
+      options: ["Paris", "Milan", "New York"],
+      correct: 0
+    },
+    {
+      question: "What does 'haute couture' literally mean?",
+      options: ["High fashion", "High sewing", "High price"],
+      correct: 1
+    },
+    {
+      question: "Which brand's logo was inspired by Greek mythology?",
+      options: ["Nike", "Versace", "Hermès"],
+      correct: 1
+    },
+    {
+      question: "What were jeans originally called?",
+      options: ["Waist overalls", "Work pants", "Denim trousers"],
+      correct: 0
+    },
+    {
+      question: "Which material was the first synthetic fabric?",
+      options: ["Polyester", "Nylon", "Rayon"],
+      correct: 2
+    },
+    {
+      question: "What does the Lacoste crocodile represent?",
+      options: ["Tennis player nickname", "Brand founder's pet", "French symbol"],
+      correct: 0
+    },
+    {
+      question: "Which fashion item was banned in several countries?",
+      options: ["Mini skirts", "Bikinis", "Platform shoes"],
+      correct: 1
+    },
+    {
+      question: "What was the original purpose of pockets?",
+      options: ["Style accessory", "Money storage", "Tool carrying"],
+      correct: 2
+    },
+    {
+      question: "Which designer popularized the wrap dress?",
+      options: ["Diane von Furstenberg", "Calvin Klein", "Ralph Lauren"],
+      correct: 0
+    },
+    {
+      question: "What does 'prêt-à-porter' mean?",
+      options: ["Ready to wear", "Made to measure", "Designer collection"],
+      correct: 0
+    },
+    {
+      question: "Which fashion trend started in workwear?",
+      options: ["Cargo pants", "Bomber jackets", "Both"],
+      correct: 2
+    },
+    {
+      question: "What was the first fashion magazine?",
+      options: ["Vogue", "Harper's Bazaar", "Cabinet des Modes"],
+      correct: 2
+    },
+    {
+      question: "Which accessory was once a religious symbol?",
+      options: ["Scarves", "Belts", "Bracelets"],
+      correct: 0
+    },
+    {
+      question: "What inspired the creation of Velcro?",
+      options: ["Spider webs", "Plant burrs", "Fish scales"],
+      correct: 1
+    },
+    {
+      question: "Which decade introduced shoulder pads?",
+      options: ["1940s", "1980s", "Both eras"],
+      correct: 2
+    },
+    {
+      question: "What was the original color of wedding dresses?",
+      options: ["White", "Blue", "Red"],
+      correct: 2
+    },
+    {
+      question: "Which fashion house created the first little black dress?",
+      options: ["Chanel", "Dior", "Givenchy"],
+      correct: 0
+    },
+    {
+      question: "What does 'fast fashion' refer to?",
+      options: ["Quick production", "Speed of trends", "Both"],
+      correct: 2
+    },
+    {
+      question: "Which fashion trend came from military uniforms?",
+      options: ["Trench coats", "Khaki colors", "Both"],
+      correct: 2
+    }
+  ];
+
+  // Facts and Quiz display management
   let factsTimer = null;
   let factsStartTimer = null;
   let shuffledFacts = [];
+  let shuffledQuiz = [];
   let currentFactIndex = 0;
+  let currentQuizIndex = 0;
+  let currentQuizScore = 0;
+  let questionsAnswered = 0;
+  let isShowingQuiz = false;
 
   // State management
   let currentState = 'upload';
@@ -1021,18 +1155,26 @@
   }
 
   function startFactsDisplay() {
-    console.log('Starting facts display...');
+    console.log('Starting facts and quiz display...');
     console.log('Facts container found:', !!elements.factsContainer);
     console.log('Current state:', currentState);
     
     // Clear any existing timers
     stopFactsDisplay();
     
-    // Initialize shuffled facts if not already done or if we've run out
+    // Initialize shuffled content
     if (shuffledFacts.length === 0 || currentFactIndex >= shuffledFacts.length) {
       shuffledFacts = shuffleArray(FASHION_FACTS);
       currentFactIndex = 0;
       console.log('Shuffled facts initialized:', shuffledFacts.length, 'facts');
+    }
+    
+    if (shuffledQuiz.length === 0 || currentQuizIndex >= shuffledQuiz.length) {
+      shuffledQuiz = shuffleArray(FASHION_QUIZ);
+      currentQuizIndex = 0;
+      currentQuizScore = 0;
+      questionsAnswered = 0;
+      console.log('Shuffled quiz initialized:', shuffledQuiz.length, 'questions');
     }
     
     // Hide facts container initially
@@ -1044,7 +1186,7 @@
       return;
     }
     
-    // Start the 10-second timer to begin showing facts
+    // Start the 10-second timer to begin showing content
     console.log('Setting 10-second timer...');
     factsStartTimer = setTimeout(() => {
       console.log('10-second timer fired. Current state:', currentState);
@@ -1056,38 +1198,50 @@
         elements.factsContainer.classList.add('ai-facts-visible');
         console.log('Facts container made visible with class');
         
-        // Show first fact immediately
-        showNextFact();
+        // Start with a fashion fact
+        isShowingQuiz = false;
+        showNextContent();
         
-        // Set up interval to show new facts every 12 seconds
+        // Set up interval to alternate between facts and quiz every 12 seconds
         factsTimer = setInterval(() => {
           console.log('12-second timer fired. State:', currentState);
           if (currentState === 'loading') {
-            showNextFact();
+            showNextContent();
           } else {
             console.log('Stopping facts - state changed to:', currentState);
             stopFactsDisplay();
           }
         }, 12000);
         
-        console.log('Facts display fully started!');
+        console.log('Facts and quiz display fully started!');
       } else {
-        console.log('Not showing facts - container missing or state changed:', {
+        console.log('Not showing content - container missing or state changed:', {
           hasContainer: !!elements.factsContainer,
           currentState: currentState
         });
       }
-    }, 10000); // Wait 10 seconds before starting facts
+    }, 5000); // Wait 5 seconds before starting content
   }
 
-  function showNextFact() {
-    console.log('showNextFact called. Container exists:', !!elements.factsContainer, 'State:', currentState);
+  function showNextContent() {
+    console.log('showNextContent called. Container exists:', !!elements.factsContainer, 'State:', currentState);
     
     if (!elements.factsContainer || currentState !== 'loading') {
-      console.log('Stopping showNextFact - no container or wrong state');
+      console.log('Stopping showNextContent - no container or wrong state');
       return;
     }
     
+    // Alternate between facts and quiz
+    if (isShowingQuiz) {
+      showQuizQuestion();
+      isShowingQuiz = false; // Next will be a fact
+    } else {
+      showFashionFact();
+      isShowingQuiz = true; // Next will be a quiz
+    }
+  }
+  
+  function showFashionFact() {
     // Get next fact
     if (currentFactIndex >= shuffledFacts.length) {
       // Reshuffle when we run out
@@ -1100,23 +1254,157 @@
     currentFactIndex++;
     console.log('Selected fact:', fact);
     
-    // Find the facts text element and update with fade transition
-    const factsText = elements.factsContainer.querySelector('.ai-facts-text');
-    console.log('Facts text element found:', !!factsText);
-    
-    if (factsText) {
-      // Fade out
-      factsText.style.opacity = '0';
-      
-      setTimeout(() => {
-        // Update text and fade in
-        factsText.textContent = fact;
-        factsText.style.opacity = '1';
-        console.log('Fact displayed:', fact);
-      }, 300);
-    } else {
-      console.error('Facts text element not found within container');
+    // Update the container to show fact mode
+    updateFactsContainer('fact', {
+      title: 'Did You Know?',
+      content: fact,
+      icon: '✨'
+    });
+  }
+  
+  function showQuizQuestion() {
+    // Get next quiz question
+    if (currentQuizIndex >= shuffledQuiz.length) {
+      // Reshuffle when we run out
+      shuffledQuiz = shuffleArray(FASHION_QUIZ);
+      currentQuizIndex = 0;
+      console.log('Reshuffled quiz questions');
     }
+    
+    const quizItem = shuffledQuiz[currentQuizIndex];
+    currentQuizIndex++;
+    console.log('Selected quiz question:', quizItem.question);
+    
+    // Update the container to show quiz mode
+    updateFactsContainer('quiz', {
+      title: 'Fashion Quiz',
+      question: quizItem.question,
+      options: quizItem.options,
+      correct: quizItem.correct,
+      icon: '🧠'
+    });
+  }
+  
+  function updateFactsContainer(mode, data) {
+    const factsContainer = elements.factsContainer;
+    if (!factsContainer) return;
+    
+    // Fade out current content
+    factsContainer.style.opacity = '0';
+    
+    setTimeout(() => {
+      if (mode === 'fact') {
+        factsContainer.innerHTML = `
+          <div class="ai-facts-header">
+            <span class="ai-facts-icon">${data.icon}</span>
+            <h4 class="ai-facts-title">${data.title}</h4>
+          </div>
+          <p class="ai-facts-text">${data.content}</p>
+        `;
+      } else if (mode === 'quiz') {
+        const scoreDisplay = questionsAnswered > 0 ? 
+          `<div class="ai-quiz-score">Score: ${currentQuizScore}/${questionsAnswered}</div>` : '';
+        
+        factsContainer.innerHTML = `
+          <div class="ai-facts-header">
+            <span class="ai-facts-icon">${data.icon}</span>
+            <h4 class="ai-facts-title">${data.title}</h4>
+          </div>
+          ${scoreDisplay}
+          <div class="ai-fashion-quiz">
+            <div class="quiz-question">${data.question}</div>
+            <div class="quiz-options">
+              ${data.options.map((option, index) => 
+                `<button class="quiz-option" data-answer="${index}">${option}</button>`
+              ).join('')}
+            </div>
+          </div>
+        `;
+        
+        // Add click handlers for quiz options with immediate execution
+        setTimeout(() => {
+          const quizOptions = factsContainer.querySelectorAll('.quiz-option');
+          console.log('Found quiz options:', quizOptions.length);
+          quizOptions.forEach((option, index) => {
+            console.log(`Adding click handler to option ${index}`);
+            option.addEventListener('click', (e) => {
+              console.log(`Quiz option ${index} clicked!`);
+              e.preventDefault();
+              e.stopPropagation();
+              handleQuizAnswer(index, data.correct, option);
+            });
+            // Also add visual feedback on click
+            option.style.cursor = 'pointer';
+          });
+        }, 100);
+      }
+      
+      // Fade in new content
+      factsContainer.style.opacity = '1';
+      console.log(`${mode} content displayed`);
+    }, 300);
+  }
+  
+  function handleQuizAnswer(selectedIndex, correctIndex, buttonElement) {
+    console.log(`handleQuizAnswer called: selected=${selectedIndex}, correct=${correctIndex}`);
+    
+    // Disable all options and remove hover effects
+    const allOptions = elements.factsContainer.querySelectorAll('.quiz-option');
+    console.log('Found options for feedback:', allOptions.length);
+    
+    allOptions.forEach((btn, index) => {
+      btn.disabled = true;
+      btn.style.cursor = 'not-allowed';
+      btn.style.opacity = '0.8';
+      
+      // Reset any existing styles
+      btn.style.backgroundColor = '';
+      btn.style.color = '';
+      btn.style.border = '';
+      btn.style.transform = '';
+    });
+    
+    // Show correct answer with better visual feedback
+    if (selectedIndex === correctIndex) {
+      console.log('Correct answer selected!');
+      buttonElement.style.backgroundColor = '#4CAF50 !important';
+      buttonElement.style.color = 'white !important';
+      buttonElement.style.border = '2px solid #45a049 !important';
+      buttonElement.style.fontWeight = 'bold';
+      currentQuizScore++;
+      
+      // Add success animation
+      buttonElement.style.transform = 'scale(1.05)';
+      buttonElement.innerHTML = '✓ ' + buttonElement.textContent.replace('✓ ', '');
+      
+    } else {
+      console.log('Wrong answer selected');
+      buttonElement.style.backgroundColor = '#f44336 !important';
+      buttonElement.style.color = 'white !important';
+      buttonElement.style.border = '2px solid #d32f2f !important';
+      buttonElement.innerHTML = '✗ ' + buttonElement.textContent.replace('✗ ', '');
+      
+      // Highlight correct answer
+      if (allOptions[correctIndex]) {
+        allOptions[correctIndex].style.backgroundColor = '#4CAF50 !important';
+        allOptions[correctIndex].style.color = 'white !important';
+        allOptions[correctIndex].style.border = '2px solid #45a049 !important';
+        allOptions[correctIndex].style.fontWeight = 'bold';
+        allOptions[correctIndex].style.transform = 'scale(1.05)';
+        allOptions[correctIndex].innerHTML = '✓ ' + allOptions[correctIndex].textContent.replace('✓ ', '');
+      }
+    }
+    
+    questionsAnswered++;
+    console.log(`Score: ${currentQuizScore}/${questionsAnswered}`);
+    
+    // Show feedback briefly before moving to next content
+    setTimeout(() => {
+      console.log('Feedback timeout - moving to next content');
+      if (currentState === 'loading') {
+        showNextContent();
+      }
+    }, 2500); // Increased to 2.5 seconds for better UX
   }
 
   function stopFactsDisplay() {

@@ -230,6 +230,95 @@ export default function Index() {
           <Layout.Section>
             <Card>
               <BlockStack gap="400">
+                <Text as="h2" variant="headingLg">
+                  💡 Why Our AI Try-On App is Better & Cheaper
+                </Text>
+                <Text variant="bodyMd" as="p">
+                  Compare our revolutionary approach to traditional AI try-on apps:
+                </Text>
+                
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '16px' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: 'var(--p-color-bg-surface-secondary)', borderBottom: '2px solid var(--p-color-border)' }}>
+                        <th style={{ padding: '12px', textAlign: 'left', fontWeight: 'bold' }}>Feature</th>
+                        <th style={{ padding: '12px', textAlign: 'center', fontWeight: 'bold', color: 'var(--p-color-text-success)' }}>Our AI Try-On App ✨</th>
+                        <th style={{ padding: '12px', textAlign: 'center', fontWeight: 'bold', color: 'var(--p-color-text-subdued)' }}>Competitor Apps</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>💰 Monthly Cost</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)', fontWeight: 'bold' }}>~$6/month*</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-critical)' }}>$20-50/month</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid var(--p-color-border)', backgroundColor: 'var(--p-color-bg-surface-secondary)' }}>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🎮 Interactive Games</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Fashion Quiz & Games</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>❌ None</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🛡️ Legal Compliance</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ No Data Storage + Safe Backgrounds</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-critical)' }}>❌ Risky Background Changes</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid var(--p-color-border)', backgroundColor: 'var(--p-color-bg-surface-secondary)' }}>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🎯 Image Accuracy</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>⭐⭐⭐⭐⭐ Highest Quality</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>⭐⭐⭐ Standard Quality</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🔑 API Key Control</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Use Your Own Keys</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>❌ Locked to Their Service</td>
+                      </tr>
+                      <tr style={{ backgroundColor: 'var(--p-color-bg-surface-secondary)' }}>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>📊 Cost Transparency</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Pay Only What You Use</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>❌ Fixed High Monthly Fees</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                
+                <Box padding="400" background="bg-surface-success" borderRadius="300">
+                  <BlockStack gap="300">
+                    <Text as="h3" variant="headingMd" color="text-success">
+                      💡 The "Electricity Meter" Advantage
+                    </Text>
+                    <Text variant="bodyMd" as="p" color="text-success">
+                      <strong>Think of us like an electricity meter vs. a hotel's all-inclusive package:</strong>
+                    </Text>
+                    <List>
+                      <List.Item>🏨 <strong>Competitors:</strong> Like paying $50/night for a hotel regardless of usage - expensive and wasteful</List.Item>
+                      <List.Item>⚡ <strong>Our App:</strong> Like having your own electricity meter - you pay only for what you actually use (~$0.10 per try-on)</List.Item>
+                      <List.Item>💰 <strong>Result:</strong> Same 100 try-ons cost you $10 instead of their $50+ monthly fee</List.Item>
+                    </List>
+                    <Text variant="bodyMd" as="p" color="text-success">
+                      *Based on OpenRouter pricing: ~$0.10 per generation. 60 generations = ~$6 vs competitors' $20-50/month
+                    </Text>
+                  </BlockStack>
+                </Box>
+                
+                <Box padding="400" background="bg-surface-info" borderRadius="300">
+                  <BlockStack gap="200">
+                    <Text as="h4" variant="headingMd" color="text-info">
+                      🛡️ Legal & Compliance Advantage
+                    </Text>
+                    <Text variant="bodyMd" as="p" color="text-info">
+                      <strong>We keep users in their original backgrounds</strong> while competitors dangerously change backgrounds, which can lead to legal issues. Our approach is safer and more compliant.
+                    </Text>
+                  </BlockStack>
+                </Box>
+              </BlockStack>
+            </Card>
+          </Layout.Section>
+        </Layout>
+
+        <Layout>
+          <Layout.Section>
+            <Card>
+              <BlockStack gap="400">
                 <Text as="h3" variant="headingMd">
                   🚀 Next Steps
                 </Text>
