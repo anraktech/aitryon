@@ -248,9 +248,9 @@ export default function Index() {
                     </thead>
                     <tbody>
                       <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
-                        <td style={{ padding: '12px', fontWeight: 'medium' }}>💰 Monthly Cost</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)', fontWeight: 'bold' }}>~$6/month*</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-critical)' }}>$20-50/month</td>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>💰 Annual Cost</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)', fontWeight: 'bold' }}>$25/year*</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-critical)' }}>$240-600/year</td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid var(--p-color-border)', backgroundColor: 'var(--p-color-bg-surface-secondary)' }}>
                         <td style={{ padding: '12px', fontWeight: 'medium' }}>🎮 Interactive Games</td>
@@ -259,8 +259,8 @@ export default function Index() {
                       </tr>
                       <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
                         <td style={{ padding: '12px', fontWeight: 'medium' }}>🛡️ Legal Compliance</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ No Data Storage + Safe Backgrounds</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-critical)' }}>❌ Risky Background Changes</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Safe Dressing Room Backgrounds</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-critical)' }}>❌ User's Original Backgrounds</td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid var(--p-color-border)', backgroundColor: 'var(--p-color-bg-surface-secondary)' }}>
                         <td style={{ padding: '12px', fontWeight: 'medium' }}>🎯 Image Accuracy</td>
@@ -295,7 +295,7 @@ export default function Index() {
                       <List.Item>💰 <strong>Result:</strong> Same 100 try-ons cost you $10 instead of their $50+ monthly fee</List.Item>
                     </List>
                     <Text variant="bodyMd" as="p" color="text-success">
-                      *Based on OpenRouter pricing: ~$0.10 per generation. 60 generations = ~$6 vs competitors' $20-50/month
+                      *Based on OpenRouter pricing: ~$0.10 per generation. 250+ generations = $25/year vs competitors' $240-600/year
                     </Text>
                   </BlockStack>
                 </Box>
@@ -306,7 +306,7 @@ export default function Index() {
                       🛡️ Legal & Compliance Advantage
                     </Text>
                     <Text variant="bodyMd" as="p" color="text-info">
-                      <strong>We keep users in their original backgrounds</strong> while competitors dangerously change backgrounds, which can lead to legal issues. Our approach is safer and more compliant.
+                      <strong>We use safe dressing room backgrounds</strong> while competitors keep users' original backgrounds, which can be risky and inappropriate. Our controlled environment approach is safer and more professional for businesses.
                     </Text>
                   </BlockStack>
                 </Box>
