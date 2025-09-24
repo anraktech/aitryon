@@ -171,6 +171,52 @@ export default function Index() {
             <Card>
               <BlockStack gap="400">
                 <Text as="h3" variant="headingMd">
+                  🔑 Need an API Key to Test?
+                </Text>
+                <Text variant="bodyMd" as="p">
+                  Don't have an OpenRouter API key yet? We've got you covered! Get started with free credits to test our AI try-on features.
+                </Text>
+                
+                <Box padding="400" background="bg-surface-success" borderRadius="300">
+                  <BlockStack gap="300">
+                    <InlineStack gap="200" align="center">
+                      <Text as="span" variant="headingMd" color="text-success">
+                        💰 $1 Free Credits
+                      </Text>
+                    </InlineStack>
+                    <Text variant="bodyMd" as="p" color="text-success">
+                      <strong>Get your API key + $1 in free credits to test the app!</strong>
+                    </Text>
+                    <Text variant="bodyMd" as="p" color="text-success">
+                      That's enough for 70-100 generations. Perfect for fully testing all features!
+                    </Text>
+                  </BlockStack>
+                </Box>
+                
+                <Box padding="300" background="bg-surface-info" borderRadius="200">
+                  <BlockStack gap="200">
+                    <Text variant="bodyMd" as="p" color="text-info">
+                      <strong>📧 Contact:</strong> kapil@anrak.io
+                    </Text>
+                    <Text variant="bodyMd" as="p" color="text-info">
+                      You will receive an API key soon in your email.
+                    </Text>
+                  </BlockStack>
+                </Box>
+                
+                <Text variant="bodySm" as="p" tone="subdued">
+                  Perfect for testing before committing to your own OpenRouter account.
+                </Text>
+              </BlockStack>
+            </Card>
+          </Layout.Section>
+        </Layout>
+
+        <Layout>
+          <Layout.Section>
+            <Card>
+              <BlockStack gap="400">
+                <Text as="h3" variant="headingMd">
                   📋 How to Get Your OpenRouter API Key
                 </Text>
                 <List type="number">
@@ -315,51 +361,6 @@ export default function Index() {
           </Layout.Section>
         </Layout>
 
-        <Layout>
-          <Layout.Section>
-            <Card>
-              <BlockStack gap="400">
-                <Text as="h3" variant="headingMd">
-                  🔑 Need an API Key to Test?
-                </Text>
-                <Text variant="bodyMd" as="p">
-                  Don't have an OpenRouter API key yet? We've got you covered! Get started with free credits to test our AI try-on features.
-                </Text>
-                
-                <Box padding="400" background="bg-surface-success" borderRadius="300">
-                  <BlockStack gap="300">
-                    <InlineStack gap="200" align="center">
-                      <Text as="span" variant="headingMd" color="text-success">
-                        💰 $1 Free Credits
-                      </Text>
-                    </InlineStack>
-                    <Text variant="bodyMd" as="p" color="text-success">
-                      <strong>Get your API key + $1 in free credits to test the app!</strong>
-                    </Text>
-                    <Text variant="bodyMd" as="p" color="text-success">
-                      That's enough for 70-100 generations. Perfect for fully testing all features!
-                    </Text>
-                  </BlockStack>
-                </Box>
-                
-                <Box padding="300" background="bg-surface-info" borderRadius="200">
-                  <BlockStack gap="200">
-                    <Text variant="bodyMd" as="p" color="text-info">
-                      <strong>📧 Contact:</strong> kapil@anrak.io
-                    </Text>
-                    <Text variant="bodyMd" as="p" color="text-info">
-                      Include your store domain and we'll set you up within 24 hours.
-                    </Text>
-                  </BlockStack>
-                </Box>
-                
-                <Text variant="bodySm" as="p" tone="subdued">
-                  Perfect for testing before committing to your own OpenRouter account.
-                </Text>
-              </BlockStack>
-            </Card>
-          </Layout.Section>
-        </Layout>
 
         <Layout>
           <Layout.Section>
