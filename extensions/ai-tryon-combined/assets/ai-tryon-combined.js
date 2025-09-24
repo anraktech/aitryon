@@ -357,51 +357,148 @@
     });
   }
 
+  function isValidProductImage(img, aggressive = false) {
+    if (!img || !img.src) return false;
+    
+    // Basic size check
+    const minWidth = aggressive ? 80 : 100;
+    const minHeight = aggressive ? 80 : 100;
+    
+    if (img.offsetWidth < minWidth || img.offsetHeight < minHeight) {
+      return false;
+    }
+    
+    // Check if it's likely a product image
+    const src = img.src.toLowerCase();
+    const alt = (img.alt || '').toLowerCase();
+    const className = (img.className || '').toLowerCase();
+    
+    // Exclude common non-product images
+    const excludePatterns = [
+      'logo', 'icon', 'cart', 'search', 'menu', 'arrow', 'chevron',
+      'social', 'facebook', 'twitter', 'instagram', 'payment',
+      'visa', 'mastercard', 'paypal', 'badge', 'seal', 'trust',
+      'loading', 'placeholder', 'avatar', 'profile'
+    ];
+    
+    const isExcluded = excludePatterns.some(pattern => 
+      src.includes(pattern) || alt.includes(pattern) || className.includes(pattern)
+    );
+    
+    if (isExcluded) return false;
+    
+    // Prefer Shopify CDN images
+    if (src.includes('cdn.shopify.com') || src.includes('shopify.com')) {
+      return true;
+    }
+    
+    // Check for product-related terms
+    const productTerms = ['product', 'item', 'clothing', 'apparel', 'wear'];
+    const hasProductTerm = productTerms.some(term => 
+      src.includes(term) || alt.includes(term) || className.includes(term)
+    );
+    
+    // In aggressive mode, be more lenient
+    if (aggressive) {
+      return hasProductTerm || (img.offsetWidth > 200 && img.offsetHeight > 200);
+    }
+    
+    return hasProductTerm;
+  }
+
   function collectProductImages() {
     // For product pages, get the main product image
-    const isProductPage = window.location.pathname.includes('/products/');
+    const isProductPage = window.location.pathname.includes('/products/') || 
+                         document.body.classList.contains('template-product') ||
+                         document.querySelector('[data-section-type="product"]') ||
+                         document.querySelector('form[action*="/cart/add"]');
     
     productImages = [];
     
     if (isProductPage) {
-      // Product page - get main product image
+      // Product page - comprehensive selectors for all themes
       const productSelectors = [
+        // Shopify CDN images (most reliable)
         'img[src*="cdn.shopify.com"]',
+        'img[src*="shopify.com"]',
+        
+        // Common product page selectors
         '.product-single__photo img',
         '.product__photo img', 
         '.product-image-main img',
-        '.product-form__cart-submit img',
+        '.product-featured-image img',
+        '.featured-image img',
         '.product img',
+        '.product-photos img',
+        '.product-gallery img',
+        '.product-images img',
+        
+        // Dawn theme
+        '.product__media img',
+        '.product-media img',
+        '.product__modal-opener img',
+        
+        // Brooklyn/Debut theme
+        '.product-single__photos img',
+        '.product-photo-container img',
+        
+        // Supply theme  
+        '.product-single__photo-wrapper img',
+        
+        // Narrative theme
+        '.product-single__media img',
+        
+        // Simple theme
+        '.product-photo img',
+        
+        // Minimal theme
+        '.product-image img',
+        
+        // Venture theme
+        '.product-single__photo img',
+        
+        // By attributes
         'img[alt*="product" i]',
         'img[data-product-image]',
-        '.featured-image img',
-        '.product-featured-image img'
+        'img[data-media-id]',
+        'img[class*="product"]',
+        'img[id*="product"]',
+        
+        // Form-related (often near product images)
+        'form[action*="/cart/add"] img',
+        '.product-form img',
+        
+        // Generic but targeted
+        'main img',
+        '[role="main"] img',
+        '#MainContent img'
       ];
       
-      // Try each selector until we find images
-      for (const selector of productSelectors) {
-        const images = document.querySelectorAll(selector);
-        images.forEach(img => {
-          if (img.src && img.src.includes('shopify') && !productImages.some(p => p.src === img.src)) {
-            productImages.push({
-              element: img,
-              originalSrc: img.src,
-              src: img.src
-            });
-          }
-        });
-        
-        // If we found images, break
-        if (productImages.length > 0) break;
-      }
+      // Try each selector and collect all valid images
+      productSelectors.forEach(selector => {
+        try {
+          const images = document.querySelectorAll(selector);
+          images.forEach(img => {
+            if (img && img.src && 
+                !productImages.some(p => p.src === img.src) &&
+                isValidProductImage(img)) {
+              productImages.push({
+                element: img,
+                originalSrc: img.src,
+                src: img.src
+              });
+            }
+          });
+        } catch (e) {
+          console.log(`Selector failed: ${selector}`, e);
+        }
+      });
       
-      // Fallback: get any image on the page
+      // If still no images, use more aggressive fallback
       if (productImages.length === 0) {
         const allImages = document.querySelectorAll('img');
         allImages.forEach(img => {
-          if (img.src && 
-              (img.src.includes('shopify') || img.src.includes('product')) && 
-              img.offsetWidth > 100 && img.offsetHeight > 100) {
+          if (img && img.src && isValidProductImage(img, true)) {
             productImages.push({
               element: img,
               originalSrc: img.src,
@@ -454,15 +551,50 @@
     // Initialize product image in preview
     const productImagePreview = document.getElementById('product-image-preview');
     if (productImagePreview) {
-      // Try multiple selectors to find product image
-      const productImg = document.querySelector('img[src*="cdn.shopify.com"], .product img, [data-product-image] img, img[alt*="product"]') ||
-                        document.querySelector('img[src*=".jpg"], img[src*=".png"], img[src*=".webp"]');
+      let productImg = null;
+      
+      // First try to get from already collected product images
+      if (productImages.length > 0) {
+        productImg = productImages[0].element;
+      } else {
+        // Collect product images if not done already
+        collectProductImages();
+        if (productImages.length > 0) {
+          productImg = productImages[0].element;
+        }
+      }
+      
+      // Fallback to comprehensive search
+      if (!productImg) {
+        const selectors = [
+          'img[src*="cdn.shopify.com"]',
+          'img[src*="shopify.com"]',
+          '.product img',
+          '.product-single__photo img',
+          '.product__photo img',
+          '.product__media img',
+          '.featured-image img',
+          'img[data-product-image]',
+          'img[alt*="product" i]',
+          'main img',
+          'img[src*=".jpg"]',
+          'img[src*=".png"]',
+          'img[src*=".webp"]'
+        ];
+        
+        for (const selector of selectors) {
+          productImg = document.querySelector(selector);
+          if (productImg && isValidProductImage(productImg, true)) {
+            break;
+          }
+        }
+      }
       
       if (productImg && productImg.src) {
         productImagePreview.src = productImg.src;
         console.log('Product image set:', productImg.src);
       } else {
-        console.log('No product image found');
+        console.log('No product image found for preview');
       }
     }
     
@@ -884,19 +1016,39 @@
         userPhotoData = compressedImage;
         elements.userPhotoPreview.src = compressedImage;
         
-        // Set product image in preview
+        // Set product image in preview - use the same logic as modal opening
         const productImagePreview = document.getElementById('product-image-preview');
         if (productImagePreview) {
-          // Get the product image from the page
-          const productImageOnPage = document.querySelector('.product-image img, .product img, img[src*="product"], [data-product-image]');
-          if (productImageOnPage && productImageOnPage.src) {
-            productImagePreview.src = productImageOnPage.src;
+          let productImg = null;
+          
+          // First try to get from already collected product images (most reliable)
+          if (productImages.length > 0) {
+            productImg = productImages[0].element;
           } else {
-            // Fallback: get from data attribute
-            const container = document.querySelector('[data-product-image]');
-            if (container) {
-              productImagePreview.src = container.getAttribute('data-product-image');
+            // Use the same comprehensive search as in openModal
+            const selectors = [
+              'img[src*="cdn.shopify.com"]',
+              'img[src*="shopify.com"]',
+              '.product img',
+              '.product-single__photo img',
+              '.product__photo img',
+              '.product__media img',
+              '.featured-image img',
+              'img[data-product-image]',
+              'img[alt*="product" i]',
+              'main img'
+            ];
+            
+            for (const selector of selectors) {
+              productImg = document.querySelector(selector);
+              if (productImg && isValidProductImage(productImg, true)) {
+                break;
+              }
             }
+          }
+          
+          if (productImg && productImg.src) {
+            productImagePreview.src = productImg.src;
           }
         }
         

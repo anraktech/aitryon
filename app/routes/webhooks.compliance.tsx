@@ -3,12 +3,12 @@ import { authenticate } from "../shopify.server";
 import db from "../db.server";
 
 export async function action({ request }: ActionFunctionArgs) {
-  // Authenticate and validate the incoming webhook with HMAC verification
-  const { topic, shop, session } = await authenticate.webhook(request);
-
-  console.log(`Received compliance webhook: ${topic} for shop: ${shop}`);
-
   try {
+    // Authenticate and validate the incoming webhook with HMAC verification
+    const { topic, shop } = await authenticate.webhook(request);
+
+    console.log(`Received compliance webhook: ${topic} for shop: ${shop}`);
+
     const payload = await request.json();
 
     switch (topic) {
@@ -31,8 +31,9 @@ export async function action({ request }: ActionFunctionArgs) {
     return new Response("OK", { status: 200 });
     
   } catch (error) {
-    console.error(`Error processing compliance webhook ${topic}:`, error);
-    return new Response("Internal Server Error", { status: 500 });
+    console.error("Error processing compliance webhook:", error);
+    // Always return 200 for compliance webhooks to avoid retry loops
+    return new Response("OK", { status: 200 });
   }
 }
 
