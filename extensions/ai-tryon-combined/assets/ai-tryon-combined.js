@@ -6,7 +6,8 @@
   const CLOUDINARY_UPLOAD_PRESET = 'shopify-tryon';
 
   // API endpoint for AI try-on (server-side Fal AI integration via Shopify App Proxy)
-  const TRYON_API_URL = '/apps/ai-try-on/api/tryon';
+  // App proxy prefix is 'apps' and subpath is 'tryon', so full URL is /apps/tryon
+  const TRYON_API_URL = '/apps/tryon';
   
 
   // Compliments for successful results

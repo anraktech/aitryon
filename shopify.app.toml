@@ -37,5 +37,5 @@ embedded = false
 
 [app_proxy]
 url = "https://aitryon-production.up.railway.app"
-subpath = "api"
-prefix = "apps/ai-try-on"
+subpath = "tryon"
+prefix = "apps"
