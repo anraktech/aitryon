@@ -3,6 +3,8 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 // Fal AI Configuration
 const FAL_API_KEY = "384bc934-d134-49d4-b21a-ecb53da57f97:65965dd6bc331a5ed556047ba323f80c";
 const FAL_MODEL = "fal-ai/kling/v1-5/kolors-virtual-try-on";
+// Note: For queue status/result checks, Fal AI uses a shortened path
+const FAL_QUEUE_MODEL = "fal-ai/kling";
 
 // CORS headers for app proxy requests
 const corsHeaders: Record<string, string> = {
@@ -35,8 +37,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     console.log("[TRYON] Checking status for request:", requestId);
 
     try {
+      // Use shortened model path for queue status checks
       const statusResponse = await fetch(
-        `https://queue.fal.run/${FAL_MODEL}/requests/${requestId}/status`,
+        `https://queue.fal.run/${FAL_QUEUE_MODEL}/requests/${requestId}/status`,
         {
           headers: {
             "Authorization": `Key ${FAL_API_KEY}`,
@@ -45,6 +48,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       );
 
       if (!statusResponse.ok) {
+        console.error("[TRYON] Status check failed:", statusResponse.status);
         return jsonResponse({
           status: "error",
           error: "Failed to check status"
@@ -55,9 +59,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       console.log("[TRYON] Status response:", status);
 
       if (status.status === "COMPLETED") {
-        // Fetch the result
+        // Fetch the result using shortened model path
         const resultResponse = await fetch(
-          `https://queue.fal.run/${FAL_MODEL}/requests/${requestId}`,
+          `https://queue.fal.run/${FAL_QUEUE_MODEL}/requests/${requestId}`,
           {
             headers: {
               "Authorization": `Key ${FAL_API_KEY}`,
