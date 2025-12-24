@@ -220,16 +220,9 @@ export default function Analytics() {
                 <BlockStack gap="300">
                   <InlineStack align="space-between">
                     <Text as="span" variant="bodyMd">
-                      AI Provider
+                      AI Model
                     </Text>
-                    <Badge tone="success">Fal AI</Badge>
-                  </InlineStack>
-
-                  <InlineStack align="space-between">
-                    <Text as="span" variant="bodyMd">
-                      Model
-                    </Text>
-                    <Badge tone="success">Kling Kolors v1.5</Badge>
+                    <Badge tone="success">ANRAK AI</Badge>
                   </InlineStack>
 
                   <InlineStack align="space-between">
@@ -241,9 +234,9 @@ export default function Analytics() {
 
                   <InlineStack align="space-between">
                     <Text as="span" variant="bodyMd">
-                      Image Storage
+                      Service
                     </Text>
-                    <Badge tone="success">Cloudinary</Badge>
+                    <Badge tone="success">Running</Badge>
                   </InlineStack>
                 </BlockStack>
               </BlockStack>

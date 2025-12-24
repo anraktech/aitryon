@@ -122,7 +122,7 @@ export default function Index() {
                 </Text>
                 <Box padding="300" background="bg-surface-success" borderRadius="200">
                   <Text variant="bodyMd" as="p" tone="success">
-                    <strong>No setup required!</strong> The AI is powered by Fal AI's Kling Kolors Virtual Try-On v1.5 model - one of the most advanced virtual try-on systems available.
+                    <strong>No setup required!</strong> Powered by ANRAK AI - one of the most advanced virtual try-on systems available.
                   </Text>
                 </Box>
               </BlockStack>
@@ -141,7 +141,7 @@ export default function Index() {
                   <List.Item>✅ Product page try-on button: Active</List.Item>
                   <List.Item>✅ Apple-style modal design: Active</List.Item>
                   <List.Item>✅ Camera functionality: Working</List.Item>
-                  <List.Item>✅ AI Processing: Fal AI (Kling Kolors v1.5)</List.Item>
+                  <List.Item>✅ AI Processing: ANRAK AI</List.Item>
                 </List>
               </BlockStack>
             </Card>
@@ -221,7 +221,7 @@ export default function Index() {
                     <tbody>
                       <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
                         <td style={{ padding: '12px', fontWeight: 'medium' }}>🤖 AI Technology</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)', fontWeight: 'bold' }}>Kling Kolors v1.5 (Latest)</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)', fontWeight: 'bold' }}>ANRAK AI (Latest)</td>
                         <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>Older Models</td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid var(--p-color-border)', backgroundColor: 'var(--p-color-bg-surface-secondary)' }}>

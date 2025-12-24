@@ -219,7 +219,82 @@
   // State management
   let currentState = 'upload';
   let userPhotoData = null;
+  let userPhotoUrl = null; // Cached Cloudinary URL
   let productImages = [];
+
+  // LocalStorage keys
+  const STORAGE_KEY_PHOTO = 'ai_tryon_user_photo';
+  const STORAGE_KEY_PHOTO_URL = 'ai_tryon_user_photo_url';
+  const STORAGE_KEY_COUNTER = 'ai_tryon_generation_count';
+
+  // Load cached photo from localStorage
+  function loadCachedPhoto() {
+    try {
+      const cachedPhoto = localStorage.getItem(STORAGE_KEY_PHOTO);
+      const cachedUrl = localStorage.getItem(STORAGE_KEY_PHOTO_URL);
+      if (cachedPhoto && cachedUrl) {
+        userPhotoData = cachedPhoto;
+        userPhotoUrl = cachedUrl;
+        return true;
+      }
+    } catch (e) {
+      console.log('Could not load cached photo:', e);
+    }
+    return false;
+  }
+
+  // Save photo to localStorage
+  function cachePhoto(photoData, photoUrl) {
+    try {
+      localStorage.setItem(STORAGE_KEY_PHOTO, photoData);
+      localStorage.setItem(STORAGE_KEY_PHOTO_URL, photoUrl);
+    } catch (e) {
+      console.log('Could not cache photo:', e);
+    }
+  }
+
+  // Clear cached photo
+  function clearCachedPhoto() {
+    try {
+      localStorage.removeItem(STORAGE_KEY_PHOTO);
+      localStorage.removeItem(STORAGE_KEY_PHOTO_URL);
+      userPhotoData = null;
+      userPhotoUrl = null;
+    } catch (e) {
+      console.log('Could not clear cached photo:', e);
+    }
+  }
+
+  // Get generation count
+  function getGenerationCount() {
+    try {
+      return parseInt(localStorage.getItem(STORAGE_KEY_COUNTER) || '0', 10);
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  // Increment generation count
+  function incrementGenerationCount() {
+    try {
+      const count = getGenerationCount() + 1;
+      localStorage.setItem(STORAGE_KEY_COUNTER, count.toString());
+      updateCounterDisplay();
+      return count;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  // Update counter display in modal
+  function updateCounterDisplay() {
+    const counterEl = document.getElementById('ai-generation-counter');
+    if (counterEl) {
+      const count = getGenerationCount();
+      counterEl.textContent = count > 0 ? `${count} try-on${count !== 1 ? 's' : ''} generated` : '';
+      counterEl.style.display = count > 0 ? 'block' : 'none';
+    }
+  }
 
   // DOM Elements
   const elements = {
@@ -337,11 +412,14 @@
     elements.cameraInput?.addEventListener('change', handleFileSelect);
     
     // Action buttons
-    elements.changePhotoBtn?.addEventListener('click', () => setState('upload'));
+    elements.changePhotoBtn?.addEventListener('click', () => {
+      clearCachedPhoto(); // Clear cached photo when user wants to change
+      setState('upload');
+    });
     elements.generateBtn?.addEventListener('click', personalizeSite);
     elements.exploreBtn?.addEventListener('click', handleAddToCart);
     elements.retryBtn?.addEventListener('click', () => {
-      userPhotoData = null;
+      clearCachedPhoto(); // Clear cached photo on retry
       if (elements.photoInput) elements.photoInput.value = '';
       if (elements.cameraInput) elements.cameraInput.value = '';
       setState('upload');
@@ -544,18 +622,17 @@
       console.error('Modal element not found');
       return;
     }
-    
-    
+
     // Move modal to body to ensure it's not constrained by parent containers
     if (elements.modal.parentElement !== document.body) {
       document.body.appendChild(elements.modal);
     }
-    
+
     // Initialize product image in preview
     const productImagePreview = document.getElementById('product-image-preview');
     if (productImagePreview) {
       let productImg = null;
-      
+
       // First try to get from already collected product images
       if (productImages.length > 0) {
         productImg = productImages[0].element;
@@ -566,7 +643,7 @@
           productImg = productImages[0].element;
         }
       }
-      
+
       // Fallback to comprehensive search
       if (!productImg) {
         const selectors = [
@@ -584,7 +661,7 @@
           'img[src*=".png"]',
           'img[src*=".webp"]'
         ];
-        
+
         for (const selector of selectors) {
           productImg = document.querySelector(selector);
           if (productImg && isValidProductImage(productImg, true)) {
@@ -592,7 +669,7 @@
           }
         }
       }
-      
+
       if (productImg && productImg.src) {
         productImagePreview.src = productImg.src;
         console.log('Product image set:', productImg.src);
@@ -600,11 +677,24 @@
         console.log('No product image found for preview');
       }
     }
-    
+
     elements.modal.classList.add('ai-modal-open');
     document.body.style.overflow = 'hidden';
-    setState('upload');
-    
+
+    // Update counter display
+    updateCounterDisplay();
+
+    // Check for cached photo - skip to preview if exists
+    if (loadCachedPhoto() && userPhotoData) {
+      console.log('Found cached photo, skipping to preview');
+      if (elements.userPhotoPreview) {
+        elements.userPhotoPreview.src = userPhotoData;
+      }
+      setState('preview');
+    } else {
+      setState('upload');
+    }
+
     console.log('Modal opened successfully');
   }
 
@@ -1099,16 +1189,24 @@
       // Process images based on page type
       const imagesToProcess = isProductPage ? 1 : Math.min(productImages.length, 20); // Product page: 1 image, Homepage: up to 20
 
-      // Upload user photo to Cloudinary once (outside the loop)
-      let userPhotoUrl;
-      try {
-        userPhotoUrl = await uploadToCloudinary(userPhotoData);
-        console.log('User photo uploaded to Cloudinary:', userPhotoUrl);
-      } catch (uploadError) {
-        console.error('Failed to upload user photo:', uploadError);
-        showError("Failed to upload photo. Please try again.");
-        setState('error');
-        return;
+      // Use cached Cloudinary URL or upload new photo
+      let currentPhotoUrl = userPhotoUrl; // Check if we have cached URL
+
+      if (!currentPhotoUrl) {
+        try {
+          currentPhotoUrl = await uploadToCloudinary(userPhotoData);
+          console.log('User photo uploaded to Cloudinary:', currentPhotoUrl);
+          // Cache the photo for future use
+          cachePhoto(userPhotoData, currentPhotoUrl);
+          userPhotoUrl = currentPhotoUrl;
+        } catch (uploadError) {
+          console.error('Failed to upload user photo:', uploadError);
+          showError("Failed to upload photo. Please try again.");
+          setState('error');
+          return;
+        }
+      } else {
+        console.log('Using cached Cloudinary URL:', currentPhotoUrl);
       }
 
       for (let i = 0; i < imagesToProcess; i++) {
@@ -1118,7 +1216,7 @@
 
           // Prepare API payload with URLs for both images
           const payload = {
-            userPhotoUrl: userPhotoUrl, // Cloudinary URL
+            userPhotoUrl: currentPhotoUrl, // Cloudinary URL (cached or freshly uploaded)
             productImageUrl: productImage.src // Shopify CDN URL
           };
 
@@ -1235,6 +1333,7 @@
               console.log('Updated product image on page');
             }
             successCount++;
+            incrementGenerationCount(); // Track successful generations
           } else {
             console.error('No image received after polling');
             failureCount++;

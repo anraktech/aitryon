@@ -81,7 +81,7 @@ export default function Settings() {
                         </Text>
                       </InlineStack>
                       <Text as="span" variant="bodyMd" fontWeight="semibold">
-                        Kling Kolors Virtual Try-On v1.5
+                        ANRAK AI Virtual Try-On
                       </Text>
                     </InlineStack>
 
@@ -89,23 +89,11 @@ export default function Settings() {
                       <InlineStack gap="200" blockAlign="center">
                         <Icon source={CheckCircleIcon} tone="success" />
                         <Text as="span" variant="bodyMd">
-                          Provider
+                          Status
                         </Text>
                       </InlineStack>
                       <Text as="span" variant="bodyMd" fontWeight="semibold">
-                        Fal AI
-                      </Text>
-                    </InlineStack>
-
-                    <InlineStack align="space-between">
-                      <InlineStack gap="200" blockAlign="center">
-                        <Icon source={CheckCircleIcon} tone="success" />
-                        <Text as="span" variant="bodyMd">
-                          Image Storage
-                        </Text>
-                      </InlineStack>
-                      <Text as="span" variant="bodyMd" fontWeight="semibold">
-                        Cloudinary
+                        Active
                       </Text>
                     </InlineStack>
                   </BlockStack>
