@@ -1122,8 +1122,9 @@
             productImageUrl: productImage.src // Shopify CDN URL
           };
 
-          // Call our server-side API (which calls Fal AI)
-          const response = await fetch(TRYON_API_URL, {
+          // Step 1: Submit job to API and get request_id
+          console.log('Submitting job to API...');
+          const submitResponse = await fetch(TRYON_API_URL, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -1131,42 +1132,80 @@
             body: JSON.stringify(payload)
           });
 
-          if (response.ok) {
-            const result = await response.json();
-            console.log('API response received:', result);
-
-            // Our API returns: { success: true, imageUrl: "..." }
-            let imageDataUrl = null;
-
-            if (result.success && result.imageUrl) {
-              imageDataUrl = result.imageUrl;
-              console.log('Found image URL from Fal AI');
-            }
-
-            if (imageDataUrl) {
-              console.log('Generated image received');
-              if (isProductPage) {
-                // Product page: show in modal
-                if (elements.generatedImage) {
-                  elements.generatedImage.src = imageDataUrl;
-                  console.log('Updated generated image in modal');
-                } else {
-                  console.error('Generated image element not found');
-                }
-              } else {
-                // Homepage: replace product image on page
-                productImage.element.src = imageDataUrl;
-                console.log('Updated product image on page');
-              }
-              successCount++;
-            } else {
-              console.error('No image found in response. Full response:', JSON.stringify(result));
-              failureCount++;
-            }
-          } else {
-            console.error('API request failed:', response.status, response.statusText);
-            const errorText = await response.text();
+          if (!submitResponse.ok) {
+            console.error('API submit failed:', submitResponse.status);
+            const errorText = await submitResponse.text();
             console.error('Error response body:', errorText);
+            failureCount++;
+            continue;
+          }
+
+          const submitResult = await submitResponse.json();
+          console.log('Job submitted:', submitResult);
+
+          if (!submitResult.request_id) {
+            console.error('No request_id in response:', submitResult);
+            failureCount++;
+            continue;
+          }
+
+          // Step 2: Poll for completion
+          const requestId = submitResult.request_id;
+          let imageDataUrl = null;
+          let attempts = 0;
+          const maxAttempts = 90; // 90 attempts * 2 seconds = 3 minutes max
+
+          console.log('Polling for result, request_id:', requestId);
+
+          while (attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+
+            try {
+              const statusResponse = await fetch(`${TRYON_API_URL}?request_id=${requestId}`);
+
+              if (!statusResponse.ok) {
+                console.error('Status check failed:', statusResponse.status);
+                attempts++;
+                continue;
+              }
+
+              const statusResult = await statusResponse.json();
+              console.log(`Poll attempt ${attempts + 1}: Status =`, statusResult.status);
+
+              if (statusResult.status === 'completed' && statusResult.imageUrl) {
+                imageDataUrl = statusResult.imageUrl;
+                console.log('Got completed result with image URL');
+                break;
+              } else if (statusResult.status === 'failed' || statusResult.status === 'error') {
+                console.error('Processing failed:', statusResult.error);
+                break;
+              }
+              // Still processing, continue polling
+            } catch (pollError) {
+              console.error('Poll error:', pollError);
+            }
+
+            attempts++;
+          }
+
+          if (imageDataUrl) {
+            console.log('Generated image received');
+            if (isProductPage) {
+              // Product page: show in modal
+              if (elements.generatedImage) {
+                elements.generatedImage.src = imageDataUrl;
+                console.log('Updated generated image in modal');
+              } else {
+                console.error('Generated image element not found');
+              }
+            } else {
+              // Homepage: replace product image on page
+              productImage.element.src = imageDataUrl;
+              console.log('Updated product image on page');
+            }
+            successCount++;
+          } else {
+            console.error('No image received after polling');
             failureCount++;
           }
 

@@ -36,6 +36,6 @@ redirect_urls = ["https://aitryon-production.up.railway.app/auth/callback", "htt
 embedded = false
 
 [app_proxy]
-url = "https://aitryon-production.up.railway.app"
+url = "https://aitryon-production.up.railway.app/tryon"
 subpath = "tryon"
 prefix = "apps"
