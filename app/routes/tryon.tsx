@@ -71,6 +71,18 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
         if (resultResponse.ok) {
           const result = await resultResponse.json();
+          console.log("[TRYON] Result response:", JSON.stringify(result).substring(0, 200));
+
+          // Check if it's an error response from the model
+          if (result.detail) {
+            const errorMsg = result.detail[0]?.msg || "Model processing failed";
+            console.error("[TRYON] Model error:", errorMsg);
+            return jsonResponse({
+              status: "failed",
+              error: errorMsg
+            }, 500);
+          }
+
           const imageUrl = result.image?.url;
 
           if (imageUrl) {
@@ -83,9 +95,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           }
         }
 
+        console.error("[TRYON] No image in result");
         return jsonResponse({
           status: "error",
-          error: "Failed to get result"
+          error: "No image generated"
         }, 500);
       } else if (status.status === "FAILED") {
         return jsonResponse({
