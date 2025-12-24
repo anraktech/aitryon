@@ -222,10 +222,9 @@
   let userPhotoUrl = null; // Cached Cloudinary URL
   let productImages = [];
 
-  // LocalStorage keys
+  // LocalStorage keys for photo caching
   const STORAGE_KEY_PHOTO = 'ai_tryon_user_photo';
   const STORAGE_KEY_PHOTO_URL = 'ai_tryon_user_photo_url';
-  const STORAGE_KEY_COUNTER = 'ai_tryon_generation_count';
 
   // Load cached photo from localStorage
   function loadCachedPhoto() {
@@ -262,37 +261,6 @@
       userPhotoUrl = null;
     } catch (e) {
       console.log('Could not clear cached photo:', e);
-    }
-  }
-
-  // Get generation count
-  function getGenerationCount() {
-    try {
-      return parseInt(localStorage.getItem(STORAGE_KEY_COUNTER) || '0', 10);
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  // Increment generation count
-  function incrementGenerationCount() {
-    try {
-      const count = getGenerationCount() + 1;
-      localStorage.setItem(STORAGE_KEY_COUNTER, count.toString());
-      updateCounterDisplay();
-      return count;
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  // Update counter display in modal
-  function updateCounterDisplay() {
-    const counterEl = document.getElementById('ai-generation-counter');
-    if (counterEl) {
-      const count = getGenerationCount();
-      counterEl.textContent = count > 0 ? `${count} try-on${count !== 1 ? 's' : ''} generated` : '';
-      counterEl.style.display = count > 0 ? 'block' : 'none';
     }
   }
 
@@ -680,9 +648,6 @@
 
     elements.modal.classList.add('ai-modal-open');
     document.body.style.overflow = 'hidden';
-
-    // Update counter display
-    updateCounterDisplay();
 
     // Check for cached photo - skip to preview if exists
     if (loadCachedPhoto() && userPhotoData) {
@@ -1333,7 +1298,6 @@
               console.log('Updated product image on page');
             }
             successCount++;
-            incrementGenerationCount(); // Track successful generations
           } else {
             console.error('No image received after polling');
             failureCount++;
