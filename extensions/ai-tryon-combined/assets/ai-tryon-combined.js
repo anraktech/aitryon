@@ -1152,6 +1152,7 @@
           // Step 2: Poll for completion
           const requestId = submitResult.request_id;
           let imageDataUrl = null;
+          let modelError = null;
           let attempts = 0;
           const maxAttempts = 90; // 90 attempts * 2 seconds = 3 minutes max
 
@@ -1163,22 +1164,32 @@
             try {
               const statusResponse = await fetch(`${TRYON_API_URL}?request_id=${requestId}`);
 
-              if (!statusResponse.ok) {
-                console.error('Status check failed:', statusResponse.status);
+              // Try to parse response body regardless of status code
+              let statusResult;
+              try {
+                statusResult = await statusResponse.json();
+              } catch (parseError) {
+                console.error('Failed to parse status response:', parseError);
                 attempts++;
                 continue;
               }
 
-              const statusResult = await statusResponse.json();
-              console.log(`Poll attempt ${attempts + 1}: Status =`, statusResult.status);
+              console.log(`Poll attempt ${attempts + 1}: Status =`, statusResult.status, statusResult);
 
               if (statusResult.status === 'completed' && statusResult.imageUrl) {
                 imageDataUrl = statusResult.imageUrl;
                 console.log('Got completed result with image URL');
                 break;
               } else if (statusResult.status === 'failed' || statusResult.status === 'error') {
-                console.error('Processing failed:', statusResult.error);
+                // Model error - stop polling and capture the error
+                modelError = statusResult.error || 'Processing failed';
+                console.error('Processing failed with error:', modelError);
                 break;
+              } else if (!statusResponse.ok) {
+                // Non-200 status but not a model failure - might be transient, keep trying
+                console.warn('Status check returned non-OK but not failed, will retry');
+                attempts++;
+                continue;
               }
               // Still processing, continue polling
             } catch (pollError) {
@@ -1186,6 +1197,26 @@
             }
 
             attempts++;
+          }
+
+          // Handle model errors with user-friendly messages
+          if (modelError) {
+            console.error('Model error detected:', modelError);
+
+            // Provide user-friendly error messages
+            let userMessage = "We couldn't process your photo. Please try again with a different image.";
+
+            if (modelError.includes('body pose') || modelError.includes('detect body')) {
+              userMessage = "We couldn't detect your full body in the photo. Please use a clear, full-body photo with good lighting.";
+            } else if (modelError.includes('face') || modelError.includes('person')) {
+              userMessage = "Please upload a clear photo showing your full body facing the camera.";
+            } else if (modelError.includes('garment') || modelError.includes('clothing')) {
+              userMessage = "There was an issue with the product image. Please try a different product.";
+            }
+
+            showError(userMessage);
+            failureCount++;
+            continue; // Skip to next product image if any
           }
 
           if (imageDataUrl) {

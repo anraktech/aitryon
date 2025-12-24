@@ -69,42 +69,55 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           }
         );
 
-        if (resultResponse.ok) {
-          const result = await resultResponse.json();
-          console.log("[TRYON] Result response:", JSON.stringify(result).substring(0, 200));
+        const result = await resultResponse.json();
+        console.log("[TRYON] Result response:", JSON.stringify(result).substring(0, 500));
 
-          // Check if it's an error response from the model
-          if (result.detail) {
-            const errorMsg = result.detail[0]?.msg || "Model processing failed";
-            console.error("[TRYON] Model error:", errorMsg);
-            return jsonResponse({
-              status: "failed",
-              error: errorMsg
-            }, 500);
-          }
+        // Check if it's an error response from the model
+        if (result.detail) {
+          // Fal AI returns errors in detail array
+          const errorDetail = result.detail[0];
+          const errorMsg = typeof errorDetail === 'string'
+            ? errorDetail
+            : errorDetail?.msg || errorDetail?.message || "Model processing failed";
+          console.error("[TRYON] Model error:", errorMsg);
+          return jsonResponse({
+            status: "failed",
+            error: errorMsg
+          }, 200); // Return 200 so client can parse the error message properly
+        }
 
-          const imageUrl = result.image?.url;
+        // Check for error in other formats
+        if (result.error) {
+          console.error("[TRYON] Result error:", result.error);
+          return jsonResponse({
+            status: "failed",
+            error: result.error
+          }, 200);
+        }
 
-          if (imageUrl) {
-            return jsonResponse({
-              status: "completed",
-              success: true,
-              imageUrl: imageUrl,
-              image: result.image
-            });
-          }
+        const imageUrl = result.image?.url;
+
+        if (imageUrl) {
+          console.log("[TRYON] Success! Image URL:", imageUrl);
+          return jsonResponse({
+            status: "completed",
+            success: true,
+            imageUrl: imageUrl,
+            image: result.image
+          });
         }
 
         console.error("[TRYON] No image in result");
         return jsonResponse({
-          status: "error",
+          status: "failed",
           error: "No image generated"
-        }, 500);
+        }, 200);
       } else if (status.status === "FAILED") {
+        console.error("[TRYON] Fal AI returned FAILED status:", status.error);
         return jsonResponse({
           status: "failed",
           error: status.error || "Processing failed"
-        }, 500);
+        }, 200); // Return 200 so client can parse error
       } else {
         // Still processing (IN_QUEUE or IN_PROGRESS)
         return jsonResponse({
