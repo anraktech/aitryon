@@ -139,12 +139,6 @@
           "label": "Semi Bold"
         }
       ]
-    },
-    {
-      "type": "text",
-      "id": "openrouter_api_key",
-      "label": "OpenRouter API Key",
-      "info": "Your OpenRouter API key for AI generation (starts with sk-or-v1-)"
     }
   ]
 }
@@ -154,10 +148,9 @@
 
 {% if request.page_type == 'product' %}
 <!-- PRODUCT PAGE VERSION -->
-<div class="ai-tryon-container" 
-  data-product-id="{{ product.id }}" 
-  data-product-image="{{ product.featured_image | image_url: 'master' }}" 
-  data-api-key="{{ block.settings.openrouter_api_key }}"
+<div class="ai-tryon-container"
+  data-product-id="{{ product.id }}"
+  data-product-image="{{ product.featured_image | image_url: 'master' }}"
 >
   <button 
     class="ai-tryon-button ai-product-button" 

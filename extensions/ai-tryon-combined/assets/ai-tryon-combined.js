@@ -2,9 +2,11 @@
   'use strict';
 
   // Configuration
-  const WEBHOOK_URL = 'https://n8n.srv920226.hstgr.cloud/webhook/gemini-image-gen';
   const CLOUDINARY_CLOUD_NAME = 'dbn97imck';
   const CLOUDINARY_UPLOAD_PRESET = 'shopify-tryon';
+
+  // API endpoint for AI try-on (server-side Fal AI integration via Shopify App Proxy)
+  const TRYON_API_URL = '/apps/ai-try-on/api/tryon';
   
 
   // Compliments for successful results
@@ -1090,14 +1092,12 @@
     }
 
     try {
-      // Get OpenRouter API key from theme settings
-      const apiKey = getOpenRouterKey();
-      
       let successCount = 0;
       let failureCount = 0;
 
       // Process images based on page type
       const imagesToProcess = isProductPage ? 1 : Math.min(productImages.length, 20); // Product page: 1 image, Homepage: up to 20
+
       // Upload user photo to Cloudinary once (outside the loop)
       let userPhotoUrl;
       try {
@@ -1114,16 +1114,15 @@
         try {
           const productImage = productImages[i];
           console.log(`Processing product image ${i + 1}/${productImages.length}: ${productImage.src}`);
-          
-          // Prepare webhook payload with URLs for both images
+
+          // Prepare API payload with URLs for both images
           const payload = {
             userPhotoUrl: userPhotoUrl, // Cloudinary URL
-            productImageUrl: productImage.src, // Shopify CDN URL
-            apiKey: apiKey
+            productImageUrl: productImage.src // Shopify CDN URL
           };
 
-          // Call webhook
-          const response = await fetch(WEBHOOK_URL, {
+          // Call our server-side API (which calls Fal AI)
+          const response = await fetch(TRYON_API_URL, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -1133,44 +1132,16 @@
 
           if (response.ok) {
             const result = await response.json();
-            console.log('Webhook response received:', result);
-            
-            // Debug: Log the exact structure
-            console.log('Response has images array?', !!result.images);
-            console.log('Images array length:', result.images ? result.images.length : 0);
-            if (result.images && result.images.length > 0) {
-              console.log('First image object:', result.images[0]);
-              console.log('Has image_url?', !!result.images[0].image_url);
-              console.log('Has url in image_url?', result.images[0].image_url ? !!result.images[0].image_url.url : false);
-            }
-            
-            // Try different response formats
+            console.log('API response received:', result);
+
+            // Our API returns: { success: true, imageUrl: "..." }
             let imageDataUrl = null;
-            
-            // Format 1: OpenRouter format with nested structure
-            if (result.choices && result.choices.length > 0 && result.choices[0].message && result.choices[0].message.images) {
-              const images = result.choices[0].message.images;
-              if (images.length > 0 && images[0].image_url && images[0].image_url.url) {
-                imageDataUrl = images[0].image_url.url;
-                console.log('Found image in choices[0].message.images format');
-              }
+
+            if (result.success && result.imageUrl) {
+              imageDataUrl = result.imageUrl;
+              console.log('Found image URL from Fal AI');
             }
-            // Format 2: Direct images array
-            else if (result.images && result.images.length > 0) {
-              if (result.images[0].image_url && result.images[0].image_url.url) {
-                imageDataUrl = result.images[0].image_url.url;
-                console.log('Found image in direct images array format');
-              } else if (typeof result.images[0] === 'string') {
-                imageDataUrl = result.images[0];
-                console.log('Found image as string in images array');
-              }
-            }
-            // Format 3: Legacy format
-            else if (result.image) {
-              imageDataUrl = `data:image/jpeg;base64,${result.image}`;
-              console.log('Found image in legacy format');
-            }
-            
+
             if (imageDataUrl) {
               console.log('Generated image received');
               if (isProductPage) {
@@ -1192,15 +1163,15 @@
               failureCount++;
             }
           } else {
-            console.error('Webhook request failed:', response.status, response.statusText);
+            console.error('API request failed:', response.status, response.statusText);
             const errorText = await response.text();
             console.error('Error response body:', errorText);
             failureCount++;
           }
-          
+
           // Small delay between requests to avoid overwhelming the API
           await new Promise(resolve => setTimeout(resolve, 500));
-          
+
         } catch (error) {
           console.error(`Error processing product image ${i + 1}:`, error);
           failureCount++;
@@ -1273,19 +1244,6 @@
     }
   }
 
-  function getOpenRouterKey() {
-    // Get API key from theme extension settings
-    const container = document.querySelector('.ai-tryon-container');
-    const apiKey = container?.dataset.apiKey;
-    
-    console.log('API Key retrieved from theme settings:', apiKey ? 'Found' : 'Not found');
-    
-    if (!apiKey || apiKey.trim() === '') {
-      throw new Error('OpenRouter API key not configured. Please add it in the theme customizer settings.');
-    }
-    
-    return apiKey;
-  }
 
   function trackAnalytics(type, count = 1) {
     // Analytics removed to avoid 404 errors

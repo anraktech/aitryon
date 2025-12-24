@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import {
@@ -13,16 +12,12 @@ import {
   Link,
   InlineStack,
   Badge,
-  ProgressBar,
-  Icon,
 } from "@shopify/polaris";
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-// import { ViewIcon, AnalyticsBarHorizontalIcon, SettingsIcon } from '@shopify/polaris-icons';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
-
   return null;
 };
 
@@ -116,12 +111,20 @@ export default function Index() {
           <Layout.Section>
             <Card>
               <BlockStack gap="400">
-                <Text as="h2" variant="headingLg">
-                  AI Try-On Extension Ready ✅
-                </Text>
+                <InlineStack align="space-between" blockAlign="center">
+                  <Text as="h2" variant="headingLg">
+                    AI Try-On Extension Ready
+                  </Text>
+                  <Badge tone="success">Active</Badge>
+                </InlineStack>
                 <Text variant="bodyMd" as="p">
-                  Your AI try-on buttons are now active on your store. Customers can upload photos and see virtual try-ons on product pages.
+                  Your AI try-on feature is fully configured and ready to use! Customers can upload photos and see virtual try-ons on product pages.
                 </Text>
+                <Box padding="300" background="bg-surface-success" borderRadius="200">
+                  <Text variant="bodyMd" as="p" tone="success">
+                    <strong>No setup required!</strong> The AI is powered by Fal AI's Kling Kolors Virtual Try-On v1.5 model - one of the most advanced virtual try-on systems available.
+                  </Text>
+                </Box>
               </BlockStack>
             </Card>
           </Layout.Section>
@@ -136,9 +139,9 @@ export default function Index() {
                 </Text>
                 <List>
                   <List.Item>✅ Product page try-on button: Active</List.Item>
-                  <List.Item>✅ Homepage personalization: Active</List.Item>
                   <List.Item>✅ Apple-style modal design: Active</List.Item>
                   <List.Item>✅ Camera functionality: Working</List.Item>
+                  <List.Item>✅ AI Processing: Fal AI (Kling Kolors v1.5)</List.Item>
                 </List>
               </BlockStack>
             </Card>
@@ -148,24 +151,23 @@ export default function Index() {
             <Card>
               <BlockStack gap="400">
                 <Text as="h3" variant="headingMd">
-                  ⚙️ API Key Setup
+                  ⚙️ Quick Setup
                 </Text>
                 <Text variant="bodyMd" as="p">
-                  Add your OpenRouter API key to enable AI generation.
+                  Add the AI Try-On button to your product pages:
                 </Text>
                 <List type="number">
                   <List.Item>Go to <strong>Online Store → Themes</strong></List.Item>
                   <List.Item>Click <strong>Customize</strong> on your active theme</List.Item>
-                  <List.Item>Find the <strong>AI Try-On button</strong> section</List.Item>
-                  <List.Item>Paste your API key in the <strong>OpenRouter API Key</strong> field</List.Item>
-                  <List.Item><strong>IMPORTANT: Add at least $5 in credits to your OpenRouter account!</strong></List.Item>
-                  <List.Item>Click <strong>Save</strong></List.Item>
+                  <List.Item>Navigate to a product page template</List.Item>
+                  <List.Item>Add the <strong>AI Try-On Product</strong> block</List.Item>
+                  <List.Item>Customize button style and click <strong>Save</strong></List.Item>
                 </List>
               </BlockStack>
             </Card>
           </Layout.Section>
         </Layout>
-        
+
         <Layout>
           <Layout.Section>
             <Card>
@@ -175,8 +177,8 @@ export default function Index() {
                 </Text>
                 <Box padding="300" background="bg-surface-success">
                   <BlockStack gap="200">
-                    <Text variant="bodyMd" as="p" color="text-success">
-                      <strong>📺 Must watch video - Easy setup steps (40 seconds):</strong>
+                    <Text variant="bodyMd" as="p" tone="success">
+                      <strong>📺 Watch the easy setup video (40 seconds):</strong>
                     </Text>
                     <Link url="https://www.youtube.com/watch?v=S5gpyYqQo-4" external target="_blank">
                       Watch Setup Video
@@ -184,7 +186,7 @@ export default function Index() {
                   </BlockStack>
                 </Box>
                 <Box padding="300" background="bg-surface-info">
-                  <Text variant="bodyMd" as="p" color="text-info">
+                  <Text variant="bodyMd" as="p" tone="info">
                     <strong>💬 For any support contact:</strong> kapil@anrak.io
                   </Text>
                 </Box>
@@ -200,89 +202,13 @@ export default function Index() {
           <Layout.Section>
             <Card>
               <BlockStack gap="400">
-                <Text as="h3" variant="headingMd">
-                  🔑 Need an API Key to Test?
-                </Text>
-                <Text variant="bodyMd" as="p">
-                  Don't have an OpenRouter API key yet? We've got you covered! Get started with free credits to test our AI try-on features.
-                </Text>
-                
-                <Box padding="400" background="bg-surface-success" borderRadius="300">
-                  <BlockStack gap="300">
-                    <InlineStack gap="200" align="center">
-                      <Text as="span" variant="headingMd" color="text-success">
-                        💰 $1 Free Credits
-                      </Text>
-                    </InlineStack>
-                    <Text variant="bodyMd" as="p" color="text-success">
-                      <strong>Get your API key + $1 in free credits to test the app!</strong>
-                    </Text>
-                    <Text variant="bodyMd" as="p" color="text-success">
-                      That's enough for 70-100 generations. Perfect for fully testing all features!
-                    </Text>
-                  </BlockStack>
-                </Box>
-                
-                <Box padding="300" background="bg-surface-info" borderRadius="200">
-                  <BlockStack gap="200">
-                    <Text variant="bodyMd" as="p" color="text-info">
-                      <strong>📧 Contact:</strong> kapil@anrak.io
-                    </Text>
-                    <Text variant="bodyMd" as="p" color="text-info">
-                      You will receive an API key soon in your email.
-                    </Text>
-                  </BlockStack>
-                </Box>
-                
-                <Text variant="bodySm" as="p" tone="subdued">
-                  Perfect for testing before committing to your own OpenRouter account.
-                </Text>
-              </BlockStack>
-            </Card>
-          </Layout.Section>
-        </Layout>
-
-        <Layout>
-          <Layout.Section>
-            <Card>
-              <BlockStack gap="400">
-                <Text as="h3" variant="headingMd">
-                  📋 How to Get Your OpenRouter API Key
-                </Text>
-                <List type="number">
-                  <List.Item>
-                    <Link url="https://openrouter.ai/" external>
-                      Visit OpenRouter.ai
-                    </Link>
-                    {" and create an account"}
-                  </List.Item>
-                  <List.Item>Go to the API Keys section in your dashboard</List.Item>
-                  <List.Item>Click "Create Key" and give it a name (e.g. "Shopify AI Try-On")</List.Item>
-                  <List.Item><strong>🚨 CRITICAL: Go to Credits section and add at least $5</strong></List.Item>
-                  <List.Item>Copy the key that starts with "sk-or-v1-"</List.Item>
-                  <List.Item>Paste it in the theme settings and save</List.Item>
-                </List>
-                <Box padding="300" background="bg-surface-critical">
-                  <Text variant="bodyMd" as="p" color="text-critical">
-                    🚨 <strong>CRITICAL:</strong> You MUST add at least $5 in credits to your OpenRouter account or the app will NOT work! Each try-on costs approximately $0.10-$0.20.
-                  </Text>
-                </Box>
-              </BlockStack>
-            </Card>
-          </Layout.Section>
-        </Layout>
-        
-        <Layout>
-          <Layout.Section>
-            <Card>
-              <BlockStack gap="400">
                 <Text as="h2" variant="headingLg">
-                  💡 Why Our AI Try-On App is Better & Cheaper
+                  💡 Why Our AI Try-On App is Better
                 </Text>
                 <Text variant="bodyMd" as="p">
                   Compare our revolutionary approach to traditional AI try-on apps:
                 </Text>
-                
+
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '16px' }}>
                     <thead>
@@ -294,64 +220,40 @@ export default function Index() {
                     </thead>
                     <tbody>
                       <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
-                        <td style={{ padding: '12px', fontWeight: 'medium' }}>💰 Annual Cost</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)', fontWeight: 'bold' }}>$25/year*</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-critical)' }}>$240-600/year</td>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🤖 AI Technology</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)', fontWeight: 'bold' }}>Kling Kolors v1.5 (Latest)</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>Older Models</td>
                       </tr>
                       <tr style={{ borderBottom: '1px solid var(--p-color-border)', backgroundColor: 'var(--p-color-bg-surface-secondary)' }}>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>⚙️ Setup Required</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Zero Config</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>❌ API Keys Required</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
                         <td style={{ padding: '12px', fontWeight: 'medium' }}>🎮 Interactive Games</td>
                         <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Fashion Quiz & Games</td>
                         <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>❌ None</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
-                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🛡️ Legal Compliance</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Safe Dressing Room Backgrounds</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-critical)' }}>❌ User's Original Backgrounds</td>
-                      </tr>
                       <tr style={{ borderBottom: '1px solid var(--p-color-border)', backgroundColor: 'var(--p-color-bg-surface-secondary)' }}>
-                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🎯 Image Accuracy</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>⭐⭐⭐⭐⭐ Highest Quality</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>⭐⭐⭐ Standard Quality</td>
-                      </tr>
-                      <tr style={{ borderBottom: '1px solid var(--p-color-border)' }}>
-                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🔑 API Key Control</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Use Your Own Keys</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>❌ Locked to Their Service</td>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🎯 Image Quality</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>⭐⭐⭐⭐⭐ Highest</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>⭐⭐⭐ Standard</td>
                       </tr>
                       <tr style={{ backgroundColor: 'var(--p-color-bg-surface-secondary)' }}>
-                        <td style={{ padding: '12px', fontWeight: 'medium' }}>📊 Cost Transparency</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Pay Only What You Use</td>
-                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>❌ Fixed High Monthly Fees</td>
+                        <td style={{ padding: '12px', fontWeight: 'medium' }}>🛡️ Legal Compliance</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-success)' }}>✅ Safe Backgrounds</td>
+                        <td style={{ padding: '12px', textAlign: 'center', color: 'var(--p-color-text-subdued)' }}>❌ User Backgrounds</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-                
-                <Box padding="400" background="bg-surface-success" borderRadius="300">
-                  <BlockStack gap="300">
-                    <Text as="h3" variant="headingMd" color="text-success">
-                      💡 The "Electricity Meter" Advantage
-                    </Text>
-                    <Text variant="bodyMd" as="p" color="text-success">
-                      <strong>Think of us like an electricity meter vs. a hotel's all-inclusive package:</strong>
-                    </Text>
-                    <List>
-                      <List.Item>🏨 <strong>Competitors:</strong> Like paying $50/night for a hotel regardless of usage - expensive and wasteful</List.Item>
-                      <List.Item>⚡ <strong>Our App:</strong> Like having your own electricity meter - you pay only for what you actually use (~$0.10 per try-on)</List.Item>
-                      <List.Item>💰 <strong>Result:</strong> Same 100 try-ons cost you $10 instead of their $50+ monthly fee</List.Item>
-                    </List>
-                    <Text variant="bodyMd" as="p" color="text-success">
-                      *Based on OpenRouter pricing: ~$0.10 per generation. 250+ generations = $25/year vs competitors' $240-600/year
-                    </Text>
-                  </BlockStack>
-                </Box>
-                
+
                 <Box padding="400" background="bg-surface-info" borderRadius="300">
                   <BlockStack gap="200">
-                    <Text as="h4" variant="headingMd" color="text-info">
+                    <Text as="h4" variant="headingMd" tone="info">
                       🛡️ Legal & Compliance Advantage
                     </Text>
-                    <Text variant="bodyMd" as="p" color="text-info">
+                    <Text variant="bodyMd" as="p" tone="info">
                       <strong>We use safe dressing room backgrounds</strong> while competitors keep users' original backgrounds, which can be risky and inappropriate. Our controlled environment approach is safer and more professional for businesses.
                     </Text>
                   </BlockStack>
@@ -360,7 +262,6 @@ export default function Index() {
             </Card>
           </Layout.Section>
         </Layout>
-
 
         <Layout>
           <Layout.Section>
